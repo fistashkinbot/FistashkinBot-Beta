@@ -47,7 +47,7 @@ class Dropdown(disnake.ui.StringSelect):
             embed4.add_field(name = f'{PREFIX}шар', value = f'Отвечает на вопрос участника.', inline=False)
             #embed2.add_field(name = f'{PREFIX}размьют', value = f'', inline=False)
             embed4.add_field(name = f'{PREFIX}пинг', value = f'Проверка на работоспособность бота и задержки.', inline=False)
-            embed4.add_field(name = f'{PREFIX}ник', value = f'Изменяет никнейм на сервере участнику, вызвавшего команду.', inline=False)
+            embed4.add_field(name = f'{PREFIX}калькулятор', value = f'Простой калькулятор.', inline=False)
 
             embed4.set_thumbnail(url = 'https://cdn.discordapp.com/avatars/991338113630752928/f3fd00030752cc638726b6118ab79299.png?size=1024')
             embed4.set_footer(text = f'{footerbyriverya4life}', icon_url = avatarbyfooterbyriverya4life)
@@ -81,7 +81,7 @@ class HelpCMD(commands.Cog):
             )
             emb.set_author(name = inter.author.name, icon_url = inter.author.display_avatar.url)
             emb.add_field(name = '📚 Информация', value = f'`{PREFIX}хелп` `{PREFIX}юзер` `{PREFIX}сервер` `{PREFIX}аватар` `{PREFIX}роли` `{PREFIX}инфо`', inline=False)
-            emb.add_field(name = '🎮 Прочее', value = f'`{PREFIX}шар` `{PREFIX}пинг` `{PREFIX}ник`', inline=False)
+            emb.add_field(name = '🎮 Прочее', value = f'`{PREFIX}шар` `{PREFIX}пинг` `{PREFIX}калькулятор`', inline=False)
             emb.set_thumbnail(url = self.bot.user.display_avatar.url)
             emb.set_footer(text = f'{footerbyriverya4life}', icon_url = avatarbyfooterbyriverya4life)
             await asyncio.sleep(0.5)

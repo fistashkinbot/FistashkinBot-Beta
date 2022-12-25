@@ -5,6 +5,10 @@
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
 ![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
 
+<div align="center">
+![FistashkinBot](https://i.imgur.com/OyPGL4V.png)
+</div>
+
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*
 **FistashkinBot** — это небольшой бот с кучкой команд и своей экономикой. Он поддерживает слеш команды, что его использование окажется куда удобнее. На данный момент версия бота *v0.9.9 22.12.2022*, но ждите обновлений, функционала и исправления багов будет куда больше. 
 

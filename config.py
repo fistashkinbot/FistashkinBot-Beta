@@ -7,7 +7,7 @@ botmaincolor = 0xFFFFFF
 #info
 footerbyriverya4life = 'Riverya4life © 2022 All rights reserved 🐒'
 avatarbyfooterbyriverya4life = 'https://avatars.githubusercontent.com/u/111198704?v=4'
-riverya4lifebotversion = 'v0.9.9 (<t:1671696920:d>)'
+riverya4lifebotversion = 'v1.0 (<t:1672008307:d>)'
 
 #activity
 gamesnames = ['Dota 2', 'Grand Theft Auto San Andreas', 'Mobile Legends', 'Cyberpunk 2077', 'Silent Hill', 'Silent Hill 2', 'Manhunt', 'Manhunt 2', 'Doom']

@@ -34,8 +34,7 @@ class CommandOtherBySlash(commands.Cog):
             'Мой ответ - Нет 😕',
             'Мои источники говорят нет 🤨',
             'Перспективы не очень 🕵️‍♂️',
-            'Очень сомнительно 🤔',
-            'ИДИ НАХУЙ! 🤬'
+            'Очень сомнительно 🤔'
         ]
         embed = disnake.Embed(
             description=f'🎱 8ball', 
@@ -59,25 +58,6 @@ class CommandOtherBySlash(commands.Cog):
         )
         embed.set_footer(text=f'⏳ Пинг: {round(self.bot.latency * 1000)}ms | {footerbyriverya4life}', icon_url= avatarbyfooterbyriverya4life)
         await inter.response.send_message(embed=embed)
-
-
-    @commands.slash_command(name = 'подключитьбота', description = 'Подключить бота к себе к голосовому каналу.', usage = 'подключитьбота', dm_permission=False)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.default_member_permissions(administrator=True)
-    @commands.has_permissions(administrator=True)
-    async def join(self, inter):
-        channel = inter.author.voice.channel
-        voice = disnake.utils.get(self.bot.voice_clients, guild=inter.guild)
-        if voice and voice.is_connected():
-            await voice.move_to(channel)
-        else:
-            await channel.connect()
-            emb = disnake.Embed(
-                description=f"Бот подключился к каналу {channel.mention}!", 
-                timestamp=inter.created_at
-            )
-            emb.set_footer(text = f'{footerbyriverya4life}', icon_url =avatarbyfooterbyriverya4life)
-            await inter.response.send_message(embed=emb)
 
 
     @commands.slash_command(name = 'калькулятор', description = '+ (сложить), - (вычесть), / (поделить), * (умножить) ** (возвести в степень), % (остаток от деления)')

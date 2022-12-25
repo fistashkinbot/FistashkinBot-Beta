@@ -68,101 +68,54 @@ class CommandOther(commands.Cog):
         await inter.send(embed=embed)
 
 
-    @commands.command(name = 'подключитьбота', description = 'Подключить бота к себе к голосовому каналу.', usage = 'подключитьбота')
+    @commands.command(name = 'калькулятор', description = '+ (сложить), - (вычесть), / (поделить), * (умножить) ** (возвести в степень), % (остаток от деления)', usage = 'калькулятор a operator b')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def join(self, inter):
+    async def math(self, inter, firstnum: float, operator, secondnum: float):
         async with inter.typing():
-            channel = inter.author.voice.channel
-            voice = disnake.utils.get(self.bot.voice_clients, guild=inter.guild)
-            if voice and voice.is_connected():
-                await voice.move_to(channel)
-            else:
-                await channel.connect()
-                emb = disnake.Embed(
-                    description=f"Бот подключился к каналу {channel.mention}!", 
-                    timestamp=inter.message.created_at
-                )
-                emb.set_footer(text = f'{footerbyriverya4life}', icon_url =avatarbyfooterbyriverya4life)
+            a = firstnum
+            b = secondnum
+            operations = ['+', '-', '/', '**', '%', '*']
+            if operator not in operations:
+                embed = disnake.Embed(description=f'{inter.author.mention}, Вы указали неверные действия. Ознакомьтесь с операторами в описании команды', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
                 await asyncio.sleep(0.5)
-
-            await inter.send(embed=emb)
-
-
-    @commands.command(name = 'отключитьбота', description = 'Отключить бота от голосового канала.', usage = 'отключитьбота')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def leave(self, inter):
-        async with inter.typing():
-            channel = inter.author.voice.channel
-            voice = disnake.utils.get(self.bot.voice_clients, guild=inter.guild)
-            if voice and voice.is_connected():
-                await voice.disconnect()
-                emb = disnake.Embed(
-                    description=f"Бот отключился от канала {channel.mention}!", 
-                    timestamp=inter.message.created_at
-                )
-                emb.set_footer(text = f'{footerbyriverya4life}', icon_url =avatarbyfooterbyriverya4life)
+                return await inter.send(embed=embed)
+            elif operator == '+':
+                c = a + b
+                embed = disnake.Embed(description=f'Сумма `{a}` и `{b}` равна `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
                 await asyncio.sleep(0.5)
-                await inter.send(embed=emb)
-            else:
-                emb = disnake.Embed(
-                    description=f"Бот не подключен к голосовому каналу и не может быть отключен!", 
-                    timestamp=inter.message.created_at
-                )
-                emb.set_footer(text = f'{footerbyriverya4life}', icon_url =avatarbyfooterbyriverya4life)
+                return await inter.send(embed=embed)
+            elif operator == '-':
+                c = a - b
+                embed = disnake.Embed(description=f'Разность `{a}` от `{b}` равна `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
                 await asyncio.sleep(0.5)
-                await inter.send(embed=emb)
-
-
-    """@commands.command(name = 'эмбед', description = 'Создание эмбеда без вебхуков.', usage = 'эмбед #Канал')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(administrator=True)
-    @commands.guild_only()
-    async def make_embed(self, inter, channel : disnake.TextChannel):
-
-        def check(message):
-            return message.author == inter.author and message.channel == inter.channel
-            
-        async with inter.typing():
-            emb = disnake.Embed(
-                description=f'**Привет!\nЯ твой помощник по созданию эмбеда!\nТы выбрал канал {channel.mention} для отправки эмбеда!\n\nДавай начнём с того как будет называться эмбед?**',
-                timestamp=inter.message.created_at,
-                color=inter.author.color
-            )
-            emb.set_footer(text=f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
-            await inter.send(embed=emb)
-            title = await self.bot.wait_for('message', check=check)
-            await inter.channel.purge(limit = 2)
-            await asyncio.sleep(0.5)
-          
-            emb = disnake.Embed(
-                description=f'**Отлично!\nТы указал в названии эмбеда следующий текст: `{title.content}`\n\nТеперь укажи что будет в описании!**',
-                timestamp=inter.message.created_at,
-                color=inter.author.color
-            )
-            emb.set_footer(text=f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
-            await inter.send(embed=emb)
-            desc = await self.bot.wait_for('message', check=check)
-            await inter.channel.purge(limit = 2)
-            await asyncio.sleep(0.5)
-
-            emb = disnake.Embed(
-                description=f'**Отлично!\nЭмбед отправлен!\n\nНазвание:** {title.content}\n**Описание:** {desc.content}\n\n**Автор новостей:** {inter.author.mention}',
-                timestamp=inter.message.created_at,
-                color=inter.author.color
-            )
-            emb.set_footer(text=f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
-            await asyncio.sleep(0.5)
-            await inter.send(embed=emb)
-
-            embed = disnake.Embed(title=title.content, description=desc.content, color=inter.author.color, timestamp=inter.message.created_at)
-            embed.set_image(url='https://media.disnakeapp.net/attachments/881476440678350898/1007971296858099752/IMG_20220813_140341.png')
-            embed.set_footer(text=f'Автор новостей: {inter.author.display_name} © 2022 | Все права защищены 🐒', icon_url=inter.author.display_avatar.url)
-
-        await channel.send(content=f'||@everyone||\n', embed=embed)"""
+                return await inter.send(embed=embed)
+            elif operator == '/':
+                c = a / b
+                embed = disnake.Embed(description=f'Частное `{a}` и `{b}` равно `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
+                await asyncio.sleep(0.5)
+                return await inter.send(embed=embed)
+            elif operator == '**':
+                c = a ** b
+                embed = disnake.Embed(description=f'Результат от возведения `{a}` в степень `{b}` равен `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
+                await asyncio.sleep(0.5)
+                return await inter.send(embed=embed)
+            elif operator == '%':
+                c = a % b
+                embed = disnake.Embed(description=f'Остаток от деления `{a}` на `{b}` равен `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
+                await asyncio.sleep(0.5)
+                return await inter.send(embed=embed)
+            elif operator == '*':
+                c = a * b
+                embed = disnake.Embed(description=f'Произведение `{a}` и `{b}` равно `{c}`.', color=botmaincolor, timestamp=inter.created_at)
+                embed.set_footer(text = f'{footerbyriverya4life}', icon_url=avatarbyfooterbyriverya4life)
+                await asyncio.sleep(0.5)
+                return await inter.send(embed=embed)
 
 
 def setup(bot):

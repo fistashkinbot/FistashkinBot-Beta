@@ -28,42 +28,10 @@ class CommandInfoBySlash(commands.Cog):
             t = inter.author.status
             if t == disnake.Status.dnd:
                 d = f"<:dnd:1044637020951154759>Не беспокоить"
-            t = inter.author.status
-            if t == disnake.Status.streaming:
-                d = f"<:dnd:1044637020951154759>Стримит"
-
-            badgelist = ""
-
-            if inter.author.public_flags.hypesquad_brilliance: #хайпсквад бриллианс
-                badgelist += f"<:hypesquadbrilliance:1044757284074565713>"
-            elif inter.author.public_flags.hypesquad_bravery: #хайпсквад бравери
-                badgelist += f"<:hypesquadbravery:1044757282401038346>"
-            elif inter.author.public_flags.hypesquad_balance: #хайпсквад баланс
-                badgelist += f"<:hypesquadbalance:1044757278915563600>"
-            elif inter.author.public_flags.hypesquad: #золотой хайпсквад
-                badgelist += f"<:hypesquadevents:1045664339933274132>"
-            elif inter.author.public_flags.early_supporter: #ранее поддержавший
-                badgelist += f"<:earlysupporter:1045664335587979326>"
-            elif inter.author.public_flags.bug_hunter: #баг хантер
-                badgelist += f"<:bughunterlevel1:1045664324842164314>"
-            elif inter.author.public_flags.bug_hunter_level_2: #баг хантер 2 уровня
-                badgelist += f"<:bughunterlevel2:1045664326536667138>"
-            elif inter.author.public_flags.verified_bot_developer: #разработчик верифицированного бота
-                badgelist += f"<:earlyverifiedbotdev:1045664337278271539>"
-            elif inter.author.public_flags.early_verified_bot_developer: #early разработчик верифицированного бота
-                badgelist += f"<:earlyverifiedbotdev:1045664337278271539>"
-            elif inter.author.public_flags.partner: #партнёр
-                badgelist += f"<:discordpartner:1045664332039598080>"
-            elif inter.author.public_flags.staff: #помощник типо
-                badgelist += f"<:discordstaff:1045664333901869096>"
-            elif inter.author.public_flags.discord_certified_moderator: #модератор дискорда
-                badgelist += f"<:certifiedmod:1045664328319254528>"
-            else:
-                badgelist += f"`❌ Отсутствуют`"
 
             emb = disnake.Embed(
                 title=f"Информация о пользователе {inter.author.display_name}", 
-                description=f"**Основная информация**\n🐱‍👤 **Имя пользователя:** {inter.author} ({inter.author.display_name})\n🏋️ **Активность:** {d}\n🎩 **Роль на сервере:** {inter.author.top_role.mention}\n🏆 **Значки:** {badgelist}\n\n📆 **Присоединился:** <t:{round(inter.author.joined_at.timestamp())}:D> (<t:{round(inter.author.joined_at.timestamp())}:R>)\n📆 **Дата регистрации:** <t:{round(inter.author.created_at.timestamp())}:D> (<t:{round(inter.author.created_at.timestamp())}:R>)", 
+                description=f"**Основная информация**\n🐱‍👤 **Имя пользователя:** {inter.author} ({inter.author.display_name})\n🏋️ **Активность:** {d}\n🎩 **Роль на сервере:** {inter.author.top_role.mention}\n\n📆 **Присоединился:** <t:{round(inter.author.joined_at.timestamp())}:D> (<t:{round(inter.author.joined_at.timestamp())}:R>)\n📆 **Дата регистрации:** <t:{round(inter.author.created_at.timestamp())}:D> (<t:{round(inter.author.created_at.timestamp())}:R>)", 
                 color=inter.author.color, 
                 timestamp=inter.created_at
             )
@@ -84,42 +52,10 @@ class CommandInfoBySlash(commands.Cog):
             t = member.status
             if t == disnake.Status.dnd:
                 d = f"<:dnd:1044637020951154759>Не беспокоить"
-            t = member.status
-            if t == disnake.Status.streaming:
-                d = f"<:dnd:1044637020951154759>Стримит"
-
-            badgelist = ""
-
-            if member.public_flags.hypesquad_brilliance: #хайпсквад бриллианс
-                badgelist += f"<:hypesquadbrilliance:1044757284074565713>"
-            elif member.public_flags.hypesquad_bravery: #хайпсквад бравери
-                badgelist += f"<:hypesquadbravery:1044757282401038346>"
-            elif member.public_flags.hypesquad_balance: #хайпсквад баланс
-                badgelist += f"<:hypesquadbalance:1044757278915563600>"
-            elif member.public_flags.hypesquad: #золотой хайпсквад
-                badgelist += f"<:hypesquadevents:1045664339933274132>"
-            elif member.public_flags.early_supporter: #ранее поддержавший
-                badgelist += f"<:earlysupporter:1045664335587979326>"
-            elif member.public_flags.bug_hunter: #баг хантер
-                badgelist += f"<:bughunterlevel1:1045664324842164314>"
-            elif member.public_flags.bug_hunter_level_2: #баг хантер 2 уровня
-                badgelist += f"<:bughunterlevel2:1045664326536667138>"
-            elif member.public_flags.verified_bot_developer: #разработчик верифицированного бота
-                badgelist += f"<:earlyverifiedbotdev:1045664337278271539>"
-            elif member.public_flags.early_verified_bot_developer: #early разработчик верифицированного бота
-                badgelist += f"<:earlyverifiedbotdev:1045664337278271539>"
-            elif member.public_flags.partner: #партнёр
-                badgelist += f"<:discordpartner:1045664332039598080>"
-            elif member.public_flags.staff: #помощник типо
-                badgelist += f"<:discordstaff:1045664333901869096>"
-            elif member.public_flags.discord_certified_moderator: #модератор дискорда
-                badgelist += f"<:certifiedmod:1045664328319254528>"
-            else:
-                badgelist += f"`❌ Отсутствуют`"
 
             emb = disnake.Embed(
                 title=f"Информация о пользователе {member.display_name}", 
-                description=f"**Основная информация**\n🐱‍👤 **Имя пользователя:** {member} ({member.display_name})\n🏋️ **Активность:** {d}\n🎩 **Роль на сервере:** {member.top_role.mention}\n🏆 **Значки:** {badgelist}\n\n📆 **Присоединился:** <t:{round(member.joined_at.timestamp())}:D> (<t:{round(member.joined_at.timestamp())}:R>)\n📆 **Дата регистрации:** <t:{round(member.created_at.timestamp())}:D> (<t:{round(member.created_at.timestamp())}:R>)", 
+                description=f"**Основная информация**\n🐱‍👤 **Имя пользователя:** {member} ({member.display_name})\n🏋️ **Активность:** {d}\n🎩 **Роль на сервере:** {member.top_role.mention}\n\n📆 **Присоединился:** <t:{round(member.joined_at.timestamp())}:D> (<t:{round(member.joined_at.timestamp())}:R>)\n📆 **Дата регистрации:** <t:{round(member.created_at.timestamp())}:D> (<t:{round(member.created_at.timestamp())}:R>)", 
                 color=member.color, 
                 timestamp=inter.created_at
             )

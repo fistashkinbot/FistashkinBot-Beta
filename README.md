@@ -3,7 +3,7 @@
 [![Лицензия GPL](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](ЛИЦЕНЗИЯ)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
-![FistashkinBot](https://img.shields.io/badge/Fistashkin%20Bot-Версия%3A%201.0-e0e752?style=for-the-badge&logo=discord&logoColor=8df8a7)<br>
+![FistashkinBot](https://img.shields.io/badge/Fistashkin%20Bot-Версия%3A%201.0-8df8a7?style=for-the-badge&logo=discord&logoColor=8df8a7)<br>
 ![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
 
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*

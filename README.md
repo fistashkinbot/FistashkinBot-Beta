@@ -1,4 +1,4 @@
-![Header](https://i.imgur.com/uPTgdiu.png)
+![Header](https://imgur.com/gallery/uPTgdiu)
 # FistashkinBot
 [![Официальный сервер Discord](https://discordapp.com/api/guilds/809899167282364416/embed.png)](https://discord.gg/Q69xQnzR6m)
 [![Лицензия GPL](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](ЛИЦЕНЗИЯ)

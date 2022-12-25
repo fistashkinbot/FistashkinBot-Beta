@@ -6,7 +6,7 @@
 ![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
 
 <div align="center">
-![FistashkinBot](https://i.imgur.com/uPTgdiu.png)
+[![FistashkinBot](https://i.imgur.com/uPTgdiu.png)
 </div>
 
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*

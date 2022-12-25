@@ -11,24 +11,8 @@ class CommandInfo(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-
-    @commands.command(name = 'олдхелп', description = 'Показывает список доступных команд бота.')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.is_owner()
-    async def help(self, inter):
-        emb = disnake.Embed( title = '👾 Доступные команды', description = '❗ВНИМАНИЕ! Бот ещё в разработке!❗', colour = botmaincolor, timestamp=inter.message.created_at)
-
-        emb.set_author(name = inter.author.name, icon_url = inter.author.display_avatar.url)
-        emb.add_field(name = '📚 Информация', value = f'`{PREFIX}хелп` `{PREFIX}юзер` `{PREFIX}сервер` `{PREFIX}аватар` `{PREFIX}роли` `{PREFIX}инфо`', inline=False)
-        emb.add_field(name = '🏆 Модерирование', value = f'`{PREFIX}времмьют` `{PREFIX}мьют` `{PREFIX}размьют` `{PREFIX}бан` `{PREFIX}разбан` `{PREFIX}кик` `{PREFIX}очистить` `{PREFIX}выдатьроль` `{PREFIX}снятьроль` `{PREFIX}создатьроль` `{PREFIX}клист` `{PREFIX}задержка`', inline=False)
-        emb.add_field(name = '🎃 Экономика', value = f'`{PREFIX}баланс` `{PREFIX}перевести` `{PREFIX}купитьроль` `{PREFIX}магазин` `{PREFIX}лидеры` `{PREFIX}бонус` `{PREFIX}слот`', inline=False)
-        emb.add_field(name = '🎮 Прочее', value = f'`{PREFIX}шар` `{PREFIX}пинг` `{PREFIX}ник` `{PREFIX}подключитьбота` `{PREFIX}отключитьбота`', inline=False)
-        emb.set_thumbnail(url = self.bot.user.display_avatar.url)
-        emb.set_footer(text = f'{footerbyriverya4life}', icon_url = avatarbyfooterbyriverya4life)
-        await inter.send(embed = emb)
-
-
+        
+        
     @commands.command(name = 'юзер', description = 'Показывает информацию об участнике.', usage = 'юзер / юзер @Участник')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.guild_only()

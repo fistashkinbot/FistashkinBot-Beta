@@ -9,7 +9,7 @@
 <p align="center">
   <img src="https://i91.servimg.com/u/f91/20/47/10/60/44_20210.png" alt="FistashkinBot"/>
 </p>
-![FistashkinBot](https://discordapp.com/api/guilds/125227483518861312/embed.png?style=banner2)](https://discord.gg/Q69xQnzR6m)
+[![FistashkinBot](https://discordapp.com/api/guilds/125227483518861312/embed.png?style=banner2)](https://discord.gg/Q69xQnzR6m)
 
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*
 **FistashkinBot** — это небольшой бот с кучкой команд и своей экономикой. Он поддерживает слеш команды, что его использование окажется куда удобнее. На данный момент версия бота *v1.0 26.12.2022*, но ждите обновлений, функционала и исправления багов будет куда больше. 

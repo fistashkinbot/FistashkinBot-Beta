@@ -8,7 +8,7 @@
 
 <p align="center">
   <img src="https://i91.servimg.com/u/f91/20/47/10/60/44_20210.png" alt="FistashkinBot"/>
-  [![Discord Bots](https://discordbots.org/api/widget/991338113630752928.png)](https://discordbots.org/bot/991338113630752928?utm_source=widget)
+  <[![Discord Bots](https://discordbots.org/api/widget/991338113630752928.png)](https://discordbots.org/bot/991338113630752928?utm_source=widget)>
 </p>
 
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*

@@ -7,9 +7,7 @@
 ![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)</br>
 [![Discord Bots](https://discordbots.org/api/widget/991338113630752928.png)](https://discordbots.org/bot/991338113630752928?utm_source=widget)
 
-<div align="center">
-  ![FistashkinBot](https://imgur.com/a/qUsNrsM)
-</div>
+
 
 #### *Пригласите Fistashkin'a и сделайте свой сервер крутым для крутых ребят!*
 **FistashkinBot** — это небольшой бот с кучкой команд и своей экономикой. Он поддерживает слеш команды, что его использование окажется куда удобнее. На данный момент версия бота *v1.01 30.12.2022*, но ждите обновлений, функционала и исправления багов будет куда больше. 

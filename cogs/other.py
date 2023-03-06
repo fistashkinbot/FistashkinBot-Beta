@@ -15,7 +15,7 @@ class CommandOther(commands.Cog):
 
     @commands.command(name = 'шар', description = 'Отвечает на вопрос участника.', usage = 'шар Вопрос')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def шар(self, inter, *, question):
+    async def ball8(self, inter, *, question):
         async with inter.typing():
             responses = [
                 'Это точно 👌',

@@ -1,7 +1,6 @@
 import disnake
 from disnake.ext import commands
 
-from utils import database
 import config
 from config import *
 
@@ -10,7 +9,6 @@ class Events(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.db = database.DataBase()
         
 
     @commands.Cog.listener()

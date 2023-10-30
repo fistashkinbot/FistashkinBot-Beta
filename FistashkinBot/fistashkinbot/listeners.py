@@ -89,7 +89,7 @@ class Listeners(commands.Cog):
                 return
             else:
                 data = await self.db.get_data(message.author)
-                if data["xp"] == 500 + 100 * data["level"]:
+                if data["xp"] >= 500 + 100 * data["level"]:
                     await self.db.update_member(
                         "UPDATE users SET level = level + ? WHERE member_id = ? AND guild_id = ?",
                         [1, message.author.id, message.guild.id],

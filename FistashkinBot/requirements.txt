@@ -1,4 +1,0 @@
-disnake
-environs
-motor
-aiosqlite

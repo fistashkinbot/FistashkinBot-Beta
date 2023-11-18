@@ -25,6 +25,9 @@
 * **Telegram:** [**Кликабельно**](https://t.me/riverya4lifeoff)
 * **Сайт:** [**Кликабельно**](https://fistashkinbot.github.io/)
 * **Пригласить бота:** [**Кликабельно**](https://discord.com/api/oauth2/authorize?client_id=991338113630752928&permissions=8&scope=bot%20applications.commands)
+* **Условия использования:** [**Кликабельно**](terms.md)
+* **Конфиденциальность:** [**Кликабельно**](privacy.md)
+
 
 ### Лицензия
 FistashkinBot распространяется под лицензией [GNU General Public License v3.0](LICENSE).

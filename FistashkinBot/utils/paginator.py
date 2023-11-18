@@ -68,4 +68,4 @@ class Paginator(disnake.ui.View):
     async def remove(
         self, button: disnake.ui.Button, inter: disnake.MessageInteraction
     ):
-        await inter.response.edit_message(view=None)
+        await self.message.delete()

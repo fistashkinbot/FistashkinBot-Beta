@@ -3,7 +3,7 @@ import datetime
 import random
 
 from disnake.ext import commands
-from utils import main, enums, constant
+from utils import main, enums, constant, database
 
 class Checks(commands.Cog):
 	def __init__(self, bot):
@@ -12,12 +12,13 @@ class Checks(commands.Cog):
 		self.color = enums.Color()
 		self.otheremojis = constant.OtherEmojis()
 		self.rp = constant.RolePlay()
+		self.db = database.DataBase()
 
 	async def check_user_bot(self, inter, text):
 		await inter.response.defer(ephemeral=True)
 		embed = disnake.Embed(
 			title=f"{self.otheremojis.WARNING} Ошибка!",
-			description=f"**{inter.author.mention}, ты не можешь {text} {self.bot.user.mention}!**",
+			description=f"{inter.author.mention}, ты не можешь **{text}** {self.bot.user.mention}!",
 			color=self.color.RED,
 		)
 		await inter.edit_original_message(embed=embed)
@@ -26,7 +27,7 @@ class Checks(commands.Cog):
 		await inter.response.defer(ephemeral=True)
 		embed = disnake.Embed(
 			title=f"{self.otheremojis.WARNING} Ошибка!",
-			description=f"**{inter.author.mention}, ты не можешь {text} самому себе!**",
+			description=f"{inter.author.mention}, ты не можешь **{text}** самому себе!",
 			color=self.color.RED,
 		)
 		await inter.edit_original_message(embed=embed)
@@ -77,6 +78,15 @@ class Checks(commands.Cog):
 		)
 		await inter.edit_original_message(embed=embed)
 
+	async def check_bot(self, inter, member):
+		await inter.response.defer(ephemeral=True)
+		embed = disnake.Embed(
+			title=f"{self.otheremojis.WARNING} Ошибка!",
+			description=f"{inter.author.mention}, ты не можешь взаимодействовать с ботом {member.mention}",
+			color=self.color.RED,
+		)
+		await inter.edit_original_message(embed=embed)
+
 	async def check_time_muted(self, inter, member, time, reason, send_to_member: bool = False):
 		await inter.response.defer(ephemeral=False)
 		d = time[-1:]
@@ -105,7 +115,6 @@ class Checks(commands.Cog):
 		dynamic_time = disnake.utils.format_dt(dynamic_durations, style="R")
 
 		embed = disnake.Embed(
-			title="🤐 Заглушка чата",
 			description=f"**Пользователь:** {member.mention}\n"
 			f"**Модератор:** {inter.author.mention}\n"
 			f"**Снятие наказания:** {dynamic_time}\n"
@@ -113,6 +122,7 @@ class Checks(commands.Cog):
 			color=self.color.MAIN,
 			timestamp=inter.created_at,
 		)
+		embed.set_author(name="🤐 Заглушка чата", icon_url=member.display_avatar.url)
 		embed.set_thumbnail(url=member.display_avatar.url)
 		embed.set_footer(
 			text="Команда по безопасности Discord сервера",
@@ -155,14 +165,17 @@ class Checks(commands.Cog):
 
 	async def send_embed_punishment(self, inter, member, reason, punish, set_author_punish, send_to_member: bool = False):
 		await inter.response.defer(ephemeral=False)
+		warns_data = await self.db.get_warns(member)
+		warns_count = warns_data["warns"]
+
 		embed = disnake.Embed(
-			title=punish,
 			description=f"**Пользователь:** {member.mention}\n"
 			f"**Модератор:** {inter.author.mention}\n"
 			f"**Причина:** `{reason}`\n",
 			color=self.color.MAIN,
 			timestamp=inter.created_at,
 		)
+		embed.set_author(name=punish, icon_url=member.display_avatar.url)
 		embed.set_thumbnail(url=member.display_avatar.url)
 		embed.set_footer(
 			text="Команда по безопасности Discord сервера",
@@ -216,6 +229,10 @@ class Checks(commands.Cog):
 			punish == "🥳 Разбан"
 		):
 			await inter.guild.unban(user=user, reason=reason)
+		elif (
+			punish == f"Предупреждение [{warns_count + 1}/5]"
+		):
+			await self.db.add_warn(member=member, reason=reason)
 
 		await inter.edit_original_message(embed=embed)
 
@@ -240,7 +257,7 @@ class Checks(commands.Cog):
 	async def check_interaction_rp(self, inter, text):
 		await inter.response.defer(ephemeral=True)
 		embed = disnake.Embed(
-			description=f"😥 {inter.author.mention}, ты не можешь сам себя {text}!"
+			description=f"😥 {inter.author.mention}, ты не можешь сам себя **{text}**!"
 		)
 		embed.set_image(url=random.choice(self.rp.SAD_ERROR_IMAGES))
 		await inter.edit_original_message(embed=embed)

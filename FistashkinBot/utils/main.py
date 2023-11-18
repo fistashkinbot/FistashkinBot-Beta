@@ -46,62 +46,62 @@ class EconomySystem(commands.Cog):
 
 	async def casino_frame(self, inter, view):
 		await inter.response.defer(ephemeral=False)
-		embed = disnake.Embed(
+		casino_embed = disnake.Embed(
 			description = "*Выбери игру в которую хочешь сыграть*\n**На выбор у тебя есть:**\n"
 			f"* Монетка\n* Кейсы\n* Бойцовский клуб", 
 			color = Color.MAIN,
 		)
-		embed.set_thumbnail(url = "https://cdn-icons-png.flaticon.com/512/1055/1055814.png")
-		embed.set_author(
+		casino_embed.set_thumbnail(url = "https://cdn-icons-png.flaticon.com/512/1055/1055814.png")
+		casino_embed.set_author(
             name="Казино", 
             icon_url=inter.author.display_avatar.url
         )
-		message = await inter.edit_original_message(embed=embed, view=view)
+		message = await inter.edit_original_message(embed=casino_embed, view=view)
 		view.message = message
 
 	async def coin_frame(self, inter, view):
 		await inter.response.defer(ephemeral=False)
-		embed = disnake.Embed(
+		coin_embed = disnake.Embed(
 	    	description=f"Множитель: **{self.MULTIPLIER}** \n Твоя задача выбрать одну из сторон монетки, если угадываешь - умножаешь свою ставку на множитель", 
 	    	color=Color.MAIN,
 	    )
-		embed.add_field(value=str(15), name="Ставка")
-		embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/272/272525.png")
-		embed.set_author(
+		coin_embed.add_field(value=str(15), name="Ставка")
+		coin_embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/272/272525.png")
+		coin_embed.set_author(
             name="Монетка", 
             icon_url=inter.author.display_avatar.url
         )
-		message = await inter.edit_original_message(embed=embed, view=view)
+		message = await inter.edit_original_message(embed=coin_embed, view=view)
 		view.message = message
 
 	async def case_frame(self, inter, view):
 		await inter.response.defer(ephemeral=False)
-		embed = disnake.Embed(
+		case_embed = disnake.Embed(
 	    	description=f"Для открытия кейса нажми на \"Открыть кейс\" \n **В кейсах большие шансы на выигрыш!**", 
 	    	color=Color.MAIN,
 	    )
-		embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/10348/10348893.png")
-		embed.set_author(
+		case_embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/10348/10348893.png")
+		case_embed.set_author(
             name="Кейсы", 
             icon_url=inter.author.display_avatar.url
         )
-		message = await inter.edit_original_message(embed=embed, view=view)
+		message = await inter.edit_original_message(embed=case_embed, view=view)
 		view.message = message
 
 	async def fight_club_frame(self, inter, view):
 		await inter.response.defer(ephemeral=False)
-		embed = disnake.Embed(
+		fight_embed = disnake.Embed(
 	    	description=f"*Первое правило бойцовского клуба - никому не рассказывай про бойцовский клуб...* \n "
 	    	f"**Стоимость вступления в поединок - 10 {self.CURRENCY_NAME}. ** \n "
 	    	f"Тебе дают возможность сделать удар первым, если ты хорошо реализуешь его, то получишь 15 {self.CURRENCY_NAME}, если противник защитится, соболезную тебе...", 
 	    	color=Color.MAIN,
 		)
-		embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/6264/6264793.png")
-		embed.set_author(
+		fight_embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/6264/6264793.png")
+		fight_embed.set_author(
             name="Бойцовский клуб", 
             icon_url=inter.author.display_avatar.url
         )
-		message = await inter.edit_original_message(embed=embed, view=view)
+		message = await inter.edit_original_message(embed=fight_embed, view=view)
 		view.message = message
 
 	async def hit(self, inter, body_part, view):

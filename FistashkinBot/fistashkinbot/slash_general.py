@@ -3,8 +3,10 @@ import random
 import datetime
 import os
 import platform
+import aiohttp
 
 from disnake.ext import commands
+from core import config
 from utils import constant, enums, main, links, database, paginator, checks
 
 
@@ -18,6 +20,7 @@ class General(commands.Cog, name="Основное"):
         self.db = database.DataBase()
         self.economy = main.EconomySystem(self.bot)
         self.checks = checks.Checks(self.bot)
+        self.config = config.Config()
 
     async def autocomplete_faq(
         inter: disnake.ApplicationCommandInteraction, string: str
@@ -385,12 +388,13 @@ class General(commands.Cog, name="Основное"):
     @commands.slash_command(
         name="пинг",
         description="Проверка на работоспособность бота и задержки.",
+        #hidden=True
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ping(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         embed = disnake.Embed(
-            description=f"{inter.author.mention}, я живой и кушаю фисташки!"
+            description=f"{inter.author.mention}, я живой и кушаю фисташки! "
             f"Мой пинг: {round(self.bot.latency * 1000)} мс!",
             color=self.color.MAIN,
         )
@@ -426,6 +430,47 @@ class General(commands.Cog, name="Основное"):
             embeds.append(embed)
         view = paginator.Paginator(embeds)
         view.message = await inter.edit_original_message(embed=embeds[0], view=view)
+
+    """@command.slash_command(name="погода")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def weather(self, inter: disnake.ApplicationCommandInteraction, city: str = commands.Param(name="город")):
+        await inter.response.defer(ephemeral=False)
+        url = "https://api.weatherapi.com/v1/current.json"
+        params = {
+            "key": self.config.WEATHER_API_TOKEN,
+            "q": city,
+        }
+        async def aiohttpClientSession() as session:
+            async with session.get(url, params=params) as res:
+                data = await res.json()
+
+                location = data["location"]["name"]
+                temp_c = data["current"]["temp_c"]
+                temp_f = data["current"]["temp_f"]
+                humidity = data["current"]["humidity"]
+                wind_kph = data["current"]["wind_kph"]
+                wind_mph = data["current"]["wind_mph"]
+                condition = data["current"]["condition"]["text"]
+                image_url = "http:" + data["current"]["condition"]["icon"]
+
+                embed = disnake.Embed(
+                    title=title, 
+                    description=f"Условие в {location} – {condition}.",
+                    color=self.color.DARK_GRAY,
+                )
+
+                embed.add_field(name="Температура", value=f"C: {temp_c} | F: {temp_f}")
+                embed.add_field(name="Влажность", value=humidity)
+                embed.add_field(name="Ветер", value=f"KPH: {wind_kph} | MPH: {wind_mph}")
+                embed.set_thumbnail(url=image_url)
+                
+                embed.set_author(
+                    name=f"Погода в {location}",
+                    icon_url=self.bot.user.display_avatar.url,
+                )
+
+                await inter.edit_original_message(embed=embed)"""
+
 
 
 def setup(bot):

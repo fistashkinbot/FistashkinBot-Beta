@@ -3,7 +3,7 @@ import random
 import datetime
 
 from disnake.ext import commands
-from utils import main, enums, constant, checks
+from utils import main, enums, constant, checks, database
 
 
 class Moderation(commands.Cog, name="Модерация"):
@@ -13,13 +13,14 @@ class Moderation(commands.Cog, name="Модерация"):
         self.color = enums.Color()
         self.otheremojis = constant.OtherEmojis()
         self.checks = checks.Checks(self.bot)
+        self.db = database.DataBase()
 
     @commands.slash_command(
         name="мьют",
         description="Отправляет участника подумать о своём поведении.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
     @commands.default_member_permissions(moderate_members=True)
     async def timeout(
@@ -121,7 +122,7 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Изгоняет указанного участника с сервера с возможностью возвращения.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
     @commands.default_member_permissions(kick_members=True)
     async def kick(
@@ -161,7 +162,7 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Изгоняет указанного участника с сервера навсегда.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     @commands.default_member_permissions(ban_members=True)
     async def ban(
@@ -203,7 +204,7 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Разбанивает указанного участника на сервере по его ID, имени или тегу.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     @commands.default_member_permissions(ban_members=True)
     async def unban(
@@ -216,21 +217,29 @@ class Moderation(commands.Cog, name="Модерация"):
             lambda reason: "не указано", name="причина", description="Укажите причину"
         ),
     ):
-        return await self.checks.send_embed_punishment(
-            inter,
-            member,
-            reason,
-            punish="🥳 Разбан",
-            set_author_punish="Вам выдана разблокировка",
-            send_to_member = False,
-        )
+        if member == self.bot.user:
+            return await self.checks.check_user_bot(inter, text="выдавать разблокировку")
+
+        if member == inter.author:
+            return await self.checks.check_user_author(
+                inter, text="выдавать разблокировку"
+            )
+        else:
+            return await self.checks.send_embed_punishment(
+                inter,
+                member,
+                reason,
+                punish="🥳 Разбан",
+                set_author_punish="Вам выдана разблокировка",
+                send_to_member = False,
+            )
 
     @commands.slash_command(
         name="создатьроль",
         description="Создание роли на сервере.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.default_member_permissions(administrator=True)
     async def create_role(
@@ -257,7 +266,7 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Выдает указанную роль участнику.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.default_member_permissions(administrator=True)
     async def getrole(
@@ -276,6 +285,9 @@ class Moderation(commands.Cog, name="Модерация"):
                 color=self.color.RED,
             )
             await inter.edit_original_message(embed=embed)
+
+        if member == self.bot.user:
+            return await self.checks.check_user_bot(inter, text=f"выдавать роль {role.mention}")
 
         if member.top_role >= inter.author.top_role:
             return await self.checks.check_user_role(inter)
@@ -302,7 +314,7 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Снимает указанную роль участнику.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.default_member_permissions(administrator=True)
     async def ungetrole(
@@ -313,6 +325,9 @@ class Moderation(commands.Cog, name="Модерация"):
         ),
         role: disnake.Role = commands.Param(name="роль", description="Выбор роли"),
     ):
+        if member == self.bot.user:
+            return await self.checks.check_user_bot(inter, text=f"снимать роль {role.mention}")
+
         if member.top_role >= inter.author.top_role:
             return await self.checks.check_user_role(inter)
 
@@ -338,9 +353,9 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Устанавливает задержку на общение в чате.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(administrator=True)
-    @commands.default_member_permissions(administrator=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.has_permissions(manage_channels=True)
+    @commands.default_member_permissions(manage_channels=True)
     async def setdelay(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -387,9 +402,9 @@ class Moderation(commands.Cog, name="Модерация"):
         description="Очищает определенное количество сообщений в канале.",
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
-    @commands.default_member_permissions(administrator=True)
+    @commands.default_member_permissions(manage_messages=True)
     async def clear(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -407,6 +422,116 @@ class Moderation(commands.Cog, name="Модерация"):
         await inter.channel.purge(limit=int(amount))
         await inter.edit_original_message(embed=embed)
 
+    @commands.slash_command(
+        name="пред",
+        description="Выдать предупреждение участнику.",
+        dm_permission=False,
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.has_permissions(ban_members=True)
+    @commands.default_member_permissions(ban_members=True)
+    async def give_warn(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = commands.Param(
+            name="участник", description="Выбор участника"
+        ),
+        reason: str = commands.Param(
+            lambda reason: "не указано", name="причина", description="Укажите причину"
+        ),
+    ):
+        if member == self.bot.user:
+            return await self.checks.check_user_bot(inter, text="выдавать предупреждения")
+
+        if member == inter.author:
+            return await self.checks.check_user_author(
+                inter, text="выдавать предупреждения"
+            )
+
+        if member.top_role >= inter.author.top_role:
+            return await self.checks.check_user_role(inter)
+
+        if member.top_role >= inter.guild.me.top_role:
+            return await self.checks.check_bot_role(inter)
+        else:
+            warns_data = await self.db.get_warns(member)
+            warns_count = warns_data["warns"]
+            if warns_count >= 5:
+                await self.db.remove_warns(member=member)
+                return await self.checks.send_embed_punishment(
+                    inter,
+                    member,
+                    reason="5/5 предупреждений",
+                    punish=f"🕯 Блокировка",
+                    set_author_punish=f"Вам выдана блокировка",
+                    send_to_member = True,
+                )
+            else:
+                return await self.checks.send_embed_punishment(
+                    inter,
+                    member,
+                    reason,
+                    punish=f"Предупреждение [{warns_count + 1}/5]",
+                    set_author_punish=f"Вам выдано предупреждение [{warns_count + 1}/5]",
+                    send_to_member = True,
+                )
+
+    @commands.slash_command(
+        name="преды",
+        description="Отображает все выданные предупреждения участнику.",
+        dm_permission=False,
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def member_warns(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = commands.Param(
+            lambda inter: inter.author, name="участник", description="Выбор участника"
+        ),
+    ):
+        await inter.response.defer(ephemeral=False)
+        if (
+            not member
+        ):  # если не упоминать участника тогда выводит аватар автора сообщения
+            member = inter.author
+
+        warns_data = await self.db.get_warns(member)
+        warns_count, reason = warns_data["warns"], warns_data["reason"]
+        embed = disnake.Embed(
+            description=f"Всего предупреждений: **{warns_count}/5**\nПричина: **{reason}**" if warns_count > 0 else "**Предупреждения отсутствуют.**",
+            color=self.color.MAIN
+        )
+        embed.set_author(name=f"Предупреждения {member.display_name}", icon_url=member.display_avatar.url)
+        await inter.edit_original_message(embed=embed)
+
+    @commands.slash_command(
+        name="сброспред",
+        description="Снимает все выданные предупреждения участнику.",
+        dm_permission=False,
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.has_permissions(ban_members=True)
+    @commands.default_member_permissions(ban_members=True)
+    async def remove_member_warns(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = commands.Param(
+            lambda inter: inter.author, name="участник", description="Выбор участника"
+        ),
+    ):
+        await inter.response.defer(ephemeral=False)
+        if (
+            not member
+        ):  # если не упоминать участника тогда выводит аватар автора сообщения
+            member = inter.author
+
+        await self.db.remove_warns(member=member)
+        embed = disnake.Embed(
+            description=f"**✅ Предупреждения {member.mention} были успешно сброшены.**",
+            color=self.color.MAIN
+        )
+        embed.set_author(name=f"Сброс предупреждений", icon_url=member.display_avatar.url)
+        await inter.edit_original_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

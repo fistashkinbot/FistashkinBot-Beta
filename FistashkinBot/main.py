@@ -7,14 +7,16 @@ from core import Config, FistashkinBot
 from utils import BotActivity, MainSettings
 
 if __name__ == "__main__":
-    
     bot = FistashkinBot()
     bot.load_extensions()
     bot.i18n.load("./localization")
 
-    @tasks.loop(minutes = random.randint(15, 30))
+    @tasks.loop(minutes=30)
     async def change_activity():
-        await bot.change_presence(status = random.choice(BotActivity.STATUS), activity = random.choice(BotActivity.ACTIVITY))
+        await bot.change_presence(
+            status=random.choice(BotActivity.STATUS),
+            activity=random.choice(BotActivity.ACTIVITY),
+        )
 
     @bot.event
     async def on_ready():

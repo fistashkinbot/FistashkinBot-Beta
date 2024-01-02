@@ -13,18 +13,20 @@ class ContextMenu(commands.Cog):
         self.profile = constant.ProfileEmojis()
         self.color = enums.Color()
         self.checks = checks.Checks(self.bot)
+        self.enum = enums.Enum()
 
     @commands.user_command(
-        name="Аватар",
-        description="Показывает аватар упомянутого участника или участника, вызвавшего команду.",
+        name=disnake.Localized("Avatar", key="CONTEXT_MENU_COMMAND_AVATAR"),
         dm_permission=False,
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def avatar(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member = None):
+    async def avatar(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = None,
+    ):
         await inter.response.defer(ephemeral=True)
-        if (
-            not member
-        ):  # если не упоминать участника тогда выводит аватар автора сообщения
+        if not member:
             member = inter.author
 
         embed = disnake.Embed(
@@ -38,23 +40,29 @@ class ContextMenu(commands.Cog):
         await inter.edit_original_message(embed=embed)
 
     @commands.user_command(
-        name="Юзер",
-        description="Показывает информацию об участнике.",
+        name=disnake.Localized("UserInfo", key="CONTEXT_MENU_COMMAND_USERINFO"),
         dm_permission=False,
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def userinfo(self, inter: disnake.ApplicationCommandInteraction, member: disnake.Member = None):
+    async def userinfo(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = None,
+    ):
         await inter.response.defer(ephemeral=True)
+
         data = await self.db.get_data(member)
-        if (
-            not member
-        ):  # если не упоминать участника тогда выводит аватар автора сообщения
-            member = inter.author
-            
         registerf = disnake.utils.format_dt(member.created_at, style="f")
         registerr = disnake.utils.format_dt(member.created_at, style="R")
         joinedf = disnake.utils.format_dt(member.joined_at, style="f")
         joinedr = disnake.utils.format_dt(member.joined_at, style="R")
+
+        level = self.enum.format_large_number(data["level"])
+        xp = self.enum.format_large_number(data["xp"])
+        total_xp = self.enum.format_large_number(data["total_xp"])
+        xp_to_lvl = self.enum.format_large_number(500 + 100 * data["level"])
+        balance = self.enum.format_large_number(data["balance"])
+        bio = await self.db.get_bio(member)
 
         user = await self.bot.fetch_user(member.id)
         response = [
@@ -72,50 +80,66 @@ class ContextMenu(commands.Cog):
             response.append(self.profile.UPDATED_NICKNAME)  # Updated Nickname
 
         description = [
-            f"**Основная информация**",
             f"**Имя пользователя:** {member} ({member.mention})",
             f"**Статус:** {self.profile.STATUS[member.status]}",
             f"**Присоединился:** {joinedf} ({joinedr})",
             f"**Дата регистрации:** {registerf} ({registerr})",
         ]
+        if not member.bot:
+            if member.activities:
+                for activity in member.activities:
+                    if activity.type == disnake.ActivityType.playing:
+                        description.append(f"**Играет в:** {activity.name}")
+                    if activity.type == disnake.ActivityType.streaming:
+                        description.append(f"**Стримит:** {activity.name}")
+                    if activity.type == disnake.ActivityType.watching:
+                        description.append(f"**Смотрит:** {activity.name}")
+                    if activity.type == disnake.ActivityType.listening:
+                        if isinstance(activity, disnake.Spotify):
+                            description.append(
+                                f"**Cлушает Spotify:** {self.profile.SPOTIFY} [{activity.artist} - {activity.title}]({activity.track_url})"
+                            )
+                        else:
+                            description.append(f"**Слушает:** {activity.name}")
 
-        if member.top_role == member.guild.default_role:
+        if member.top_role == member.guild.default_role or member.bot:
             color = self.color.DARK_GRAY
-            pass
-        elif member == member.bot or member == self.bot.user:
-            color = self.color.DARK_GRAY
-            pass
-        elif member.top_role is not None:
-            top_role = member.top_role.mention
+        else:
             color = member.top_role.color
-            description.append(f"**Приоритетная роль:** {top_role}")
 
-        if member.activities:
-            for activity in member.activities:
-                if isinstance(activity, disnake.Spotify):
-                    description.append(
-                        f"{self.profile.SPOTIFY} **Cлушает Spotify:** [{activity.artist} - {activity.title}]({activity.track_url})"
-                    )
+        if (
+            member.bot
+            or member != inter.author
+            and bio
+            == "Вы можете добавить сюда какую-нибудь полезную информацию о себе командой `/осебе`"
+        ):
+            bio = None
 
         embed = disnake.Embed(
-            description=f"\n ".join(description),
+            description=bio,
             color=color,
             timestamp=inter.created_at,
         )
 
-        if response:
-            embed.add_field(name="Значки", value=" ".join(response), inline=True)
+        embed.add_field(
+            name="Основная информация",
+            value=f"\n".join(description),
+            inline=False,
+        )
+        if not member.bot:
+            embed.add_field(
+                name="Уровень",
+                value=f"{level} | Опыт: {xp}/{xp_to_lvl}\n(всего: {total_xp})",
+                inline=True,
+            )
+            embed.add_field(
+                name="Экономика",
+                value=f"Баланс:\n {balance} {self.economy.CURRENCY_NAME}",
+                inline=True,
+            )
 
-        embed.add_field(
-            name="Уровень",
-            value=f"{data['level']} (Опыт: {data['xp']}/{500 + 100 * data['level']})",
-            inline=True,
-        )
-        embed.add_field(
-            name="Экономика",
-            value=f"Баланс: {data['balance']} {self.economy.CURRENCY_NAME}",
-            inline=True,
-        )
+            if response is not None:
+                embed.add_field(name="Значки", value=" ".join(response), inline=True)
 
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.set_image(url=user.banner.url if user.banner else None)

@@ -118,10 +118,7 @@ class BotActivity:
             name=random.choice(Activity.LISTENING_NAMES),
             type=disnake.ActivityType.listening,
         ),
-        disnake.Activity(
-            name=random.choice(Activity.COMPETING_NAMES),
-            type=disnake.ActivityType.competing,
-        ),
+        None,
     ]
 
     STATUS = [disnake.Status.idle, disnake.Status.online, disnake.Status.dnd]

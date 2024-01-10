@@ -28,7 +28,7 @@
 * **Пригласить бота:** [**Кликабельно**](https://discord.com/api/oauth2/authorize?client_id=991338113630752928&permissions=8&scope=bot%20applications.commands)
 * **Сайт:** [**Кликабельно**](https://fistashkinbot.github.io/)
 * **Наш официальный сервер Discord:** [**Кликабельно**](https://discord.gg/H9XCZSReMj)
-* **Бот на мониторингах:** [BotiCord](https://boticord.top/bot/991338113630752928) | [Top.gg](https://top.gg/bot/991338113630752928) | SD.C (скоро)
+* **Бот на мониторингах:** [**BotiCord**](https://boticord.top/bot/991338113630752928) | [**Top.gg**](https://top.gg/bot/991338113630752928) | SD.C (скоро)
 * **Условия использования:** [**Кликабельно**](TERMS.md)
 * **Конфиденциальность:** [**Кликабельно**](PRIVACY.md)
 

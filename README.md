@@ -6,7 +6,7 @@
 ![aiogram](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
 ![environs](https://img.shields.io/badge/environs-red?style=for-the-badge)
 ![motor](https://img.shields.io/badge/motor_pymongo-gray?style=for-the-badge&logo=mongodb)
-![FistashkinBot](https://img.shields.io/badge/Fistashkin%20Bot-Версия%3A%20v1.4-8df8a7?style=for-the-badge&logo=discord&logoColor=8df8a7)
+![FistashkinBot](https://img.shields.io/badge/Fistashkin%20Bot-Версия%3A%20v1.6.5-8df8a7?style=for-the-badge&logo=discord&logoColor=8df8a7)
 [![Discord Bots](https://discordbots.org/api/widget/991338113630752928.png)](https://discordbots.org/bot/991338113630752928?utm_source=widget)
 <a href="#">![](https://skillicons.dev/icons?i=py,sqlite,mongodb,discord,md,kotlin)</a><br/>
 

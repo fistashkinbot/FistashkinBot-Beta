@@ -1,16 +1,11 @@
 # FistashkinBot
-[![Официальный сервер Discord](https://discordapp.com/api/guilds/809899167282364416/embed.png)](https://discord.gg/Q69xQnzR6m)
-[![Лицензия GPL](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](LICENSE)
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
-![aiogram](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
-![environs](https://img.shields.io/badge/environs-red?style=for-the-badge)
-![motor](https://img.shields.io/badge/motor_pymongo-gray?style=for-the-badge&logo=mongodb)
 ![FistashkinBot](https://img.shields.io/badge/Fistashkin%20Bot-Версия%3A%20v1.6.5-8df8a7?style=for-the-badge&logo=discord&logoColor=8df8a7)
-[![Discord Bots](https://discordbots.org/api/widget/991338113630752928.png)](https://discordbots.org/bot/991338113630752928?utm_source=widget)
-<a href="#">![](https://skillicons.dev/icons?i=py,sqlite,mongodb,discord,md,kotlin)</a><br/>
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
+![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
+![environs](https://img.shields.io/badge/environs-red?style=for-the-badge)
 
-## **FistashkinBot - небольшой бот с прикольными командами для вашего уютного сообщества, работающий на слэш командах!**
+**FistashkinBot - небольшой бот с прикольными командами для вашего уютного сообщества, работающий на слэш командах!**
 
 Вот краткий обзор возможностей бота:
 ### **🎀 Утилиты**
@@ -36,4 +31,3 @@
 ### Лицензия
 FistashkinBot распространяется под лицензией [GNU General Public License v3.0](LICENSE).
 > Разрешения этой строгой лицензии с авторским левом зависят от предоставления полного исходного кода лицензионных произведений и модификаций, которые включают более крупные произведения, использующие лицензионное произведение, под той же лицензией. Уведомления об авторских правах и лицензиях должны быть сохранены. Участники обеспечивают прямое предоставление патентных прав.
-> 

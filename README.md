@@ -1,6 +1,6 @@
 # FistashkinBot
 
-![FistashkinBot](https://img.shields.io/badge/FistashkinBot_v1.6.5-black?style=for-the-badge&logo=discord)
+![FistashkinBot](https://img.shields.io/badge/FistashkinBot_v1.7-black?style=for-the-badge&logo=discord)
 ![disnake](https://img.shields.io/badge/disnake-black?style=for-the-badge&logo=discord)
 ![environs](https://img.shields.io/badge/environs-black?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python_3.11-black?style=for-the-badge&logo=python)

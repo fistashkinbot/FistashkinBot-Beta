@@ -28,7 +28,7 @@ class MainSettings:
     FOOTER_AVATAR = "https://github.com/riverya4life.png"
     DEVELOPER_ID = 668453200457760786
     BOT_ID = 991338113630752928
-    BOT_VERSION = "v1.7b (<t:1705796743:d>)"
+    BOT_VERSION = "v1.7 (<t:1705922655:d>)"
     BOT_EMOJI = "<:fistashkinbot:1145318360196845649>"
 
     GITHUB_AUTHOR = "https://github.com/riverya4life"

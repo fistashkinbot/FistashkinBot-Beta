@@ -1,0 +1,13 @@
+asyncio
+aiohttp
+aiosqlite
+disnake
+disnake-jishaku
+dnspython
+pillow
+bs4
+PyNaCl
+python-dotenv
+psutil
+requests
+git+https://github.com/earluv/Wavelink-Disnake

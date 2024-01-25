@@ -1,3 +1,5 @@
+<center><img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=FistashkinBot&fontSize=80&fontAlignY=35&animation=twinkling&fontColor=gradient" /></center>
+
 # FistashkinBot
 
 ![FistashkinBot](https://img.shields.io/badge/FistashkinBot_v1.7-black?style=for-the-badge&logo=discord)

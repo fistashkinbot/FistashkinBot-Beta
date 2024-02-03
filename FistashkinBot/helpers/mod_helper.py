@@ -81,7 +81,24 @@ class ModerationHelper:
             channel_id = log_channel["log_channel_id"]
             channel = disnake.utils.get(inter.guild.channels, id=channel_id)
             if channel:
-                await channel.send(embed=embed)
+                log_embed = disnake.Embed(
+                    description=f"Участник {member.mention} замьючен! 🙊",
+                    color=self.color.MAIN,
+                    timestamp=inter.created_at,
+                )
+                log_embed.add_field(
+                    name="Модератор", value=inter.author.mention, inline=True
+                )
+                log_embed.add_field(
+                    name="Наказание будет снято", value=dynamic_time, inline=True
+                )
+                log_embed.add_field(name="Причина", value=reason, inline=False)
+
+                log_embed.set_thumbnail(url=member.display_avatar.url)
+                log_embed.set_footer(
+                    text=f"ID {'бота' if member.bot else 'участника'}: {member.id}"
+                )
+                await channel.send(embed=log_embed)
 
         await member.timeout(until=dynamic_durations, reason=reason)
         if send_to_member:
@@ -145,7 +162,20 @@ class ModerationHelper:
             channel_id = log_channel["log_channel_id"]
             channel = disnake.utils.get(inter.guild.channels, id=channel_id)
             if channel:
-                await channel.send(embed=embed)
+                log_embed = disnake.Embed(
+                    description=punish[2:],
+                    color=self.color.MAIN,
+                    timestamp=inter.created_at,
+                )
+
+                log_embed.add_field(name="Модератор", value=inter.author.mention)
+                log_embed.add_field(name="Причина", value=reason)
+
+                log_embed.set_thumbnail(url=member.display_avatar.url)
+                log_embed.set_footer(
+                    text=f"ID {'бота' if member.bot else 'участника'}: {member.id}"
+                )
+                await channel.send(embed=log_embed)
 
         if send_to_member == True:
             await member.send(

@@ -1,4 +1,6 @@
 import disnake
+import datetime
+
 from disnake.ext import commands
 from utils import database, enums
 
@@ -19,7 +21,7 @@ class Logs(commands.Cog):
                 registerf = disnake.utils.format_dt(member.created_at, style="f")
                 registerr = disnake.utils.format_dt(member.created_at, style="R")
                 embed = disnake.Embed(
-                    description=f"Участник **{member}** ({member.mention}) присоединился к серверу",
+                    description=f"{'Бот' if member.bot else 'Участник'} **{member}** ({member.mention}) присоединился к серверу",
                     color=self.color.MAIN,
                 )
                 embed.add_field(
@@ -27,7 +29,9 @@ class Logs(commands.Cog):
                     value=f"{registerf} ({registerr})",
                     inline=True,
                 )
-                embed.set_footer(text=f"ID участника: {member.id}")
+                embed.set_footer(
+                    text=f"ID {'бота' if member.bot else 'участника'}: {member.id}"
+                )
                 embed.set_thumbnail(url=member.display_avatar.url)
                 await channel.send(embed=embed)
 
@@ -43,7 +47,7 @@ class Logs(commands.Cog):
                 role_list.reverse()
                 role_string = " | ".join(role_list)
                 embed = disnake.Embed(
-                    description=f"Участник **{member}** ({member.mention}) покинул сервер",
+                    description=f"{'Бот' if member.bot else 'Участник'} **{member}** ({member.mention}) покинул сервер",
                     color=self.color.MAIN,
                 )
                 if not member.top_role == member.guild.default_role:
@@ -52,7 +56,9 @@ class Logs(commands.Cog):
                         value=role_string,
                         inline=False,
                     )
-                embed.set_footer(text=f"ID участника: {member.id}")
+                embed.set_footer(
+                    text=f"ID {'бота' if member.bot else 'участника'}: {member.id}"
+                )
                 embed.set_thumbnail(url=member.display_avatar.url)
                 await channel.send(embed=embed)
 
@@ -67,7 +73,7 @@ class Logs(commands.Cog):
                 channel = disnake.utils.get(message.guild.channels, id=channel_id)
                 if channel:
                     embed = disnake.Embed(
-                        description=f"[Сообщение]({message.channel.jump_url}) было удалено",
+                        description=f"Сообщение было удалено",
                         color=self.color.MAIN,
                     )
                     embed.add_field(
@@ -75,12 +81,12 @@ class Logs(commands.Cog):
                     )
                     embed.add_field(
                         name="Автор",
-                        value=f"{message.author.name} ({message.author.mention})",
+                        value=f"**{message.author.name}** ({message.author.mention})",
                         inline=True,
                     )
                     embed.add_field(
                         name="Канал",
-                        value=f"{message.channel.name} ({message.channel.mention})",
+                        value=f"**{message.channel.name}** ({message.channel.mention})",
                         inline=True,
                     )
                     embed.set_footer(text=f"ID сообщения: {message.id}")
@@ -127,12 +133,12 @@ class Logs(commands.Cog):
                     )
                     embed.add_field(
                         name="Автор",
-                        value=f"{after.author.name} ({after.author.mention})",
+                        value=f"**{after.author.name}** ({after.author.mention})",
                         inline=True,
                     )
                     embed.add_field(
                         name="Канал",
-                        value=f"{after.channel.name} ({after.channel.mention})",
+                        value=f"**{after.channel.name}** ({after.channel.mention})",
                         inline=True,
                     )
                     embed.set_footer(text=f"ID сообщения: {after.id}")
@@ -156,10 +162,12 @@ class Logs(commands.Cog):
                 channel = disnake.utils.get(after.guild.channels, id=channel_id)
                 if channel:
                     embed = disnake.Embed(
-                        description=f"Никнейм участника **{after}** ({after.mention}) был изменен",
+                        description=f"Никнейм {'бота' if after.bot else 'участника'} **{after}** ({after.mention}) был изменен",
                         color=self.color.MAIN,
                     )
-                    embed.set_footer(text=f"ID участника: {after.id}")
+                    embed.set_footer(
+                        text=f"ID {'бота' if after.bot else 'участника'}: {after.id}"
+                    )
                     embed.set_thumbnail(url=after.display_avatar.url)
                     embed.add_field(
                         name="Старый никнейм:", value=before.display_name, inline=True

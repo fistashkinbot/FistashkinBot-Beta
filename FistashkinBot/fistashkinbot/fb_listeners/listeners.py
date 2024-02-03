@@ -15,6 +15,35 @@ class Listeners(commands.Cog):
         self.checks = checks.Checks(self.bot)
 
     @commands.Cog.listener()
+    async def on_member_join(self, member):
+        if member.guild.id == self.main.DISCORD_BOT_SERVER_ID:
+            description = [
+                f":flag_gb: :flag_us:\n"
+                f"Hello, {member.mention}! Welcome to the FistashkinBot community and support guild!"
+                f"Please check the ⁠<#1044628885876260865> channel for useful info and rules.\n\n"
+                f":flag_ru:\n"
+                f"Привет, {member.mention}! Добро пожаловать на сервер поддержки и сообщества пользователей FistashkinBot!"
+                f"Пожалуйста, ознакомься с информацией и правилами в канале ⁠<#1044628885876260865>\n\n"
+                f":flag_ua:\n"
+                f"Привіт, {member.mention}! Ласкаво просимо на сервер підтримки та спільноти користувачів FistashkinBot!"
+                f"Будь ласка, ознайомся з інформацією та правилами в каналі <#1044628885876260865>"
+            ]
+            await member.send(
+                embed=disnake.Embed(
+                    description="".join(description), 
+                    color=self.color.MAIN
+                ),
+                components=[
+                    disnake.ui.Button(
+                        label=f"Отправлено с {member.guild.name}",
+                        emoji="📨",
+                        style=disnake.ButtonStyle.gray,
+                        disabled=True,
+                    )
+                ],
+            )
+
+    @commands.Cog.listener()
     async def on_guild_join(self, guild):
         developer = await self.bot.fetch_user(self.main.DEVELOPER_ID)
         inviter = await guild.audit_logs(
@@ -69,42 +98,6 @@ class Listeners(commands.Cog):
                 f"— Ссылка на сервер: [клик!]({self.main.DISCORD_BOT_SERVER})\n— Сайт бота: [клик!]({self.main.BOT_SITE})\n"
                 f"— Пригласи меня и на другие сервера, тыкнув на кнопочку в профиле \🥺",
                 delete_after=30.0,
-            )
-
-    @commands.Cog.listener()
-    async def on_slash_command_error(self, inter, error):
-        # error = getattr(error, "original", error)
-        print(error)
-
-        if isinstance(
-            error, (commands.MissingPermissions, commands.BotMissingPermissions)
-        ):
-            return await self.checks.check_missing_permissions(inter, error)
-
-        if isinstance(error, commands.NotOwner):
-            return await self.checks.check_not_owner(inter)
-
-        if isinstance(error, commands.CommandOnCooldown):
-            cooldown_time = datetime.datetime.now() + datetime.timedelta(
-                seconds=int(round(error.retry_after))
-            )
-            dynamic_time = disnake.utils.format_dt(cooldown_time, style="R")
-            return await self.checks.check_cooldown(
-                inter,
-                text=f"⏱️ Вы достигли кулдауна этой команды. Вы сможете использовать её вновь {dynamic_time}!",
-            )
-
-        if isinstance(error, commands.errors.MemberNotFound):
-            return await self.checks.check_member_not_found(inter)
-
-        if isinstance(error, commands.NSFWChannelRequired):
-            return await self.checks.check_is_nsfw(inter)
-
-        if isinstance(error, Exception):
-            return await self.checks.check_unknown_exception(
-                inter,
-                text=f"❌ Произошла неизвестная ошибка, пожалуйста, отправьте ошибку на [сервер технической поддержки](https://discord.com/channels/1037792926383747143/1066328008664813610)\n\n"
-                f"**Код ошибки:**\n```{error}```",
             )
 
 

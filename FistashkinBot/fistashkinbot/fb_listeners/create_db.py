@@ -2,6 +2,7 @@ import disnake
 import random
 
 from disnake.ext import commands
+from loguru import logger
 from utils import database, constant, enums, main
 
 
@@ -21,32 +22,28 @@ class DB_Event(commands.Cog):
         for guild in self.bot.guilds:
             for member in guild.members:
                 await self.db.insert_new_member(member)
-        print(f"{len(guild.members)} участников было добавлено в базу данных!")
+        logger.info(f"{len(guild.members)} участников было добавлено в базу данных!")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await self.db.insert_new_member(member)
-        print(f"Участник {member} ({member.id}) был добавлен в базу данных!")
+        logger.info(f"Участник {member} ({member.id}) был добавлен в базу данных!")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         for member in guild.members:
             await self.db.insert_new_member(member)
-        print(
+        logger.info(
             f"Сервер {guild.name} был добавлен в базу данных! Добавлено новых участников: {len(guild.members)}"
         )
 
-    @commands.Cog.listener()
-    async def on_slash_command_completion(
-        self, inter: disnake.ApplicationCommandInteraction
-    ):
-        await self.db.insert_command_count()
-
-    @commands.Cog.listener()
-    async def on_user_command_completion(
-        self, inter: disnake.ApplicationCommandInteraction
-    ):
-        await self.db.insert_command_count()
+    @commands.Cog.listener(disnake.Event.slash_command_completion)
+    @commands.Cog.listener(disnake.Event.user_command_completion)
+    async def on_command_completion(self, inter: disnake.ApplicationCommandInteraction):
+        logger.info(
+            f"use: {inter.application_command.qualified_name}, user: {inter.author.name} ({inter.author.id})"
+        )
+        return await self.db.insert_command_count()
 
 
 def setup(bot):

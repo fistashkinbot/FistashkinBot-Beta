@@ -1,22 +1,28 @@
 import disnake
 import platform
 import random
+import datetime
+import os
 
 from disnake.ext import tasks
 from core import Config, FistashkinBot
 from utils import BotActivity, MainSettings
+from loguru import logger
 
 if __name__ == "__main__":
+    os.system("@cls||clear")
+    data_time = datetime.datetime.now().strftime("%d.%m.%Y %H-%M-%S")
+    logger.add(sink = f"./logs/{data_time}.log")
+
     bot = FistashkinBot()
     bot.i18n.load("./localization")
     bot.load_extensions()
 
+    await bot.change_presence(status=disnake.Status.idle)
+
     @tasks.loop(minutes=60)
     async def change_activity():
-        await bot.change_presence(
-            status=disnake.Status.idle,
-            activity=random.choice(BotActivity.ACTIVITY),
-        )
+        await bot.change_presence(activity=random.choice(BotActivity.ACTIVITY))
 
     @bot.event
     async def on_ready():
@@ -53,18 +59,18 @@ if __name__ == "__main__":
             bot.get_guild(1037792926383747143).channels, id=1191523826585059419
         )
         await vc.guild.change_voice_state(channel=vc, self_mute=False, self_deaf=False)
-        print(f"\n - Бот успешно подключен - \n")
-        print(START_MESSAGE)
+        logger.info(f"\n - Бот успешно подключен - \n")
+        logger.info(START_MESSAGE)
 
     try:
         bot.run(Config.TOKEN)
     except HTTPException:
-        print("Бот временно забанен в Discord из-за наложенного RateLimit!")
-        print("Пытаюсь исправить...")
+        logger.error("Бот временно забанен в Discord из-за наложенного RateLimit!")
+        logger.error("Пытаюсь исправить...")
         system("kill 1")
         try:
             bot.run(Config.TOKEN)
         except HTTPException:
-            print("Временно запрещен!")
+            logger.error("Временно запрещен!")
     except Exception as error:
-        print(error)
+        logger.error(error)

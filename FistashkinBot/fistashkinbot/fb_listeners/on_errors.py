@@ -3,6 +3,7 @@ import datetime
 
 from disnake.ext import commands
 from utils import CustomError, Support_Link, enums, checks
+from loguru import logger
 
 DESCRIPTIONS = {
     commands.MissingPermissions: "❌ У вас нет прав на выполнения этой команды!",
@@ -34,10 +35,13 @@ class OnErrors(commands.Cog):
         self.color = enums.Color()
         self.checks = checks.Checks(self.bot)
 
-    @commands.Cog.listener()
-    async def on_slash_command_error(self, inter, error):
+    @commands.Cog.listener(disnake.Event.slash_command_error)
+    async def on_slash_command_error(self,
+        inter: disnake.ApplicationCommandInteraction,
+        error: commands.CommandError
+    ):
         # error = getattr(error, "original", error)
-        print(error)
+        logger.error(error)
 
         if isinstance(error, commands.MissingPermissions):
             return await self.checks.check_missing_permissions(inter, error)

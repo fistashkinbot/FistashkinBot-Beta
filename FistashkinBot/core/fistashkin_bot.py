@@ -17,7 +17,6 @@ class FistashkinBot(commands.AutoShardedInteractionBot):
         )
 
     def load_extensions(self):
-
         for folder in os.listdir("fistashkinbot"):
             for cog in find_extensions_in(f"fistashkinbot/{folder}"):
                 try:

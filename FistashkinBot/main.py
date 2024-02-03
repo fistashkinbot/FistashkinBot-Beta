@@ -12,7 +12,7 @@ from loguru import logger
 if __name__ == "__main__":
     os.system("@cls||clear")
     data_time = datetime.datetime.now().strftime("%d.%m.%Y %H-%M-%S")
-    logger.add(sink = f"./logs/{data_time}.log")
+    logger.add(sink=f"./logs/{data_time}.log")
 
     bot = FistashkinBot()
     bot.i18n.load("./localization")

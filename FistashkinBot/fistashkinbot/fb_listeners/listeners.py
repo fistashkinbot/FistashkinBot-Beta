@@ -30,8 +30,7 @@ class Listeners(commands.Cog):
             ]
             await member.send(
                 embed=disnake.Embed(
-                    description="".join(description), 
-                    color=self.color.MAIN
+                    description="".join(description), color=self.color.MAIN
                 ),
                 components=[
                     disnake.ui.Button(

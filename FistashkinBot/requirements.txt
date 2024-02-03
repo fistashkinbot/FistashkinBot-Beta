@@ -11,4 +11,5 @@ python-dotenv
 humanize
 psutil
 requests
+loguru
 git+https://github.com/earluv/Wavelink-Disnake

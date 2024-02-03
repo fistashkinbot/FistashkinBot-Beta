@@ -13,17 +13,10 @@ class FistashkinBot(commands.AutoShardedInteractionBot):
             sync_commands_debug=False,
             chunk_guilds_at_startup=False,
             reload=True,
-            # test_guilds=[1156719063087726613],
             *args,
         )
 
     def load_extensions(self):
-        """for filename in os.listdir("./fistashkinbot"):
-        if filename.endswith(".py"):
-            try:
-                self.load_extension(f"fistashkinbot.{filename[:-3]}")
-            except Exception as e:
-                traceback.format_exc(e)"""
 
         for folder in os.listdir("fistashkinbot"):
             for cog in find_extensions_in(f"fistashkinbot/{folder}"):

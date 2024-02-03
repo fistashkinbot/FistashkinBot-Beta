@@ -12,7 +12,7 @@ class Config:
     WEATHER_API_TOKEN = env.str("WEATHER_API_TOKEN")
 
     LAVALINK_SETTINGS = {
-        "host": "server.nexcord.com",
-        "port": 11104,
-        "password": "N1KE02061992",
+        "host": "host",
+        "port": 7777,
+        "password": "pass",
     }

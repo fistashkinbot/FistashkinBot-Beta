@@ -9,7 +9,6 @@ import requests
 from disnake.ext import commands
 from bs4 import BeautifulSoup
 from utils import constant, enums, main, links, database, paginator, checks
-from utils.bot_locale import BotLocal
 from helpers.settings_helper import *
 from humanize import naturaldelta
 
@@ -769,8 +768,13 @@ class General(commands.Cog, name="🛠️ Утилиты"):
     async def logging_settings(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=True)
         embed = disnake.Embed(
-            title=BotLocal("slash_command.setting_logs.embed.title").get(inter.locale),
-            description=BotLocal("slash_command.setting_logs.embed.description").get(inter.locale).format(user=self.bot.user.name),
+            title="Логгирование",
+            description=f"Логгирование - полезная вещь для модерации сервера. {self.bot.user.display_name} всё это настроит!\n"
+            "Пока система логов не будет работать, но вы можете заранее её настроить!\n\n"
+            "Чтобы настроить систему логгирования нужно:\n"
+            "1. Включить режим разработчика в **Настройки -> Расширенные -> Режим разработчика** для копирования ID.\n"
+            "2. Добавить ID канала для логгов.\n"
+            "3. Готово!",
             color=self.color.DARK_GRAY,
         )
         view = LogsSetupButtons(inter)

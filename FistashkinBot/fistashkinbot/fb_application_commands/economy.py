@@ -3,7 +3,7 @@ import random
 import datetime
 
 from disnake.ext import commands
-from utils import database, main, enums, constant, paginator, RankCard, Settings, checks
+from utils import database, main, enums, constant, paginator, discord_card, checks
 from PIL import ImageColor
 
 
@@ -98,7 +98,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
 
         else:
             await inter.response.defer(ephemeral=False)
-            user = await self.bot.fetch_user(member.id)
+            """user = await self.bot.fetch_user(member.id)
             data = await self.db.get_data(member)
 
             if member.top_role == member.guild.default_role:
@@ -124,8 +124,19 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             )
             image = await rank.card()
             await inter.edit_original_message(
-                file=disnake.File(image, filename=f"rank_{user.name}.png")
-            )
+                file=image
+            )"""
+            levelcard = discord_card.LevelCard()
+            data = await self.db.get_data(member)
+            levelcard.avatar = member.display_avatar.url
+            levelcard.path = "https://cdn.discordapp.com/attachments/1008029744706621453/1201299441865470044/11_1.png?ex=65c9504a&is=65b6db4a&hm=f7fc409c6c30653d4ed6fc582d3703d3cec0497a87e2ab4b8dd299910a2e62c2&" #"https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"
+            levelcard.name = member
+            levelcard.xp = data["xp"]
+            levelcard.required_xp = 5 * (data["level"] ** 2) + 50 * data["level"] + 100
+            levelcard.level = data["level"]
+            levelcard.is_rounded = True
+
+            await inter.edit_original_message(file=await levelcard.create())
 
     @commands.slash_command(
         name=disnake.Localized("pay", key="PAY_COMMAND_NAME"),
@@ -287,7 +298,10 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             )
             embeds.append(current_embed)
 
-        view = paginator.Paginator(inter, embeds)
+        if len(embeds) > 1:
+            view = paginator.Paginator(inter, embeds)
+        else:
+            view = None
         message = await inter.edit_original_message(embed=embeds[0], view=view)
         view.message = message
 
@@ -352,7 +366,10 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             )
             embeds.append(current_embed)
 
-        view = paginator.Paginator(inter, embeds)
+        if len(embeds) > 1:
+            view = paginator.Paginator(inter, embeds)
+        else:
+            view = None
         message = await inter.edit_original_message(embed=embeds[0], view=view)
         view.message = message
 
@@ -416,7 +433,10 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             await inter.edit_original_message(embed=embed)
             return
 
-        view = paginator.Paginator(inter, embeds=role_pages)
+        if len(embeds) > 1:
+            view = paginator.Paginator(inter, embeds=role_pages)
+        else:
+            view = None
         # Добавляем кнопки к представлению
         for role_button in role_buttons:
             view.add_item(role_button)

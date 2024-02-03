@@ -11,7 +11,7 @@ class Links(disnake.ui.View):
         super().__init__()
         self.add_item(
             disnake.ui.Button(
-                label="Сайт",
+                label="Наш Сайт",
                 url=self.main.BOT_SITE,
                 emoji="🍪",
             )

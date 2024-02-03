@@ -150,7 +150,7 @@ class ControlPanel(disnake.ui.View):
                 )
 
 
-class Music(commands.Cog, name="🎵 Музыка"):
+class Music(commands.Cog, name="🎵 Музыка [Beta]"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.song_queue = {}

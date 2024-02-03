@@ -50,6 +50,8 @@ class Slash_Help(commands.Cog):
             "TempVoice",
             "DB_Event",
             "Logs",
+            "OnErrors",
+            "Economy_Event",
         ]
 
         embed = disnake.Embed(
@@ -83,7 +85,7 @@ class Slash_Help(commands.Cog):
                     )
 
             embed.add_field(
-                name=f"{cog.qualified_name}",
+                name=cog.qualified_name,
                 value=cog.description + "\n" + text,
                 inline=False,
             )

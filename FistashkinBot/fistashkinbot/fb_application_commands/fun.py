@@ -16,7 +16,6 @@ from services import waifu_pics
 class Fun(commands.Cog, name="😄 Развлечение"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.rp = constant.RolePlay()
         self.main = main.MainSettings()
         self.eightball = constant.EightBall()
         self.color = enums.Color()
@@ -58,42 +57,42 @@ class Fun(commands.Cog, name="😄 Развлечение"):
     }
 
     RP_DESCRIPTIONS = {
-        "pat": "Погладил(-а) {user}",
-        "hug": "Обнял(-а) {user}",
-        "kiss": "Поцеловал(-а) {user}",
-        "lick": "Облизнул(-а) {user}",
-        "cuddle": "Прижал(-а) к себе {user}",
-        "handhold": "Взял(-а) за руку {user}",
-        "nom": "Покормил(-а) {user}",
-        "slap": "Дал(-а) пощечину {user}",
-        "bite": "Сделал(-а) кусь {user}",
-        "highfive": "Дал(-а) пять {user}",
+        "pat": "{author} погладил(-а) {user}",
+        "hug": "{author} обнял(-а) {user}",
+        "kiss": "{author} поцеловал(-а) {user}",
+        "lick": "{author} облизнул(-а) {user}",
+        "cuddle": "{author} прижал(-а) к себе {user}",
+        "handhold": "{author} взял(-а) за руку {user}",
+        "nom": "{author} покормил(-а) {user}",
+        "slap": "{author} дал(-а) пощечину {user}",
+        "bite": "{author} сделал(-а) кусь {user}",
+        "highfive": "{author} дал(-а) пять {user}",
     }
 
     RP_DESCRIPTIONS_MYSELF = {
-        "pat": "Погладил(-а) себя",
-        "hug": "Обнял(-а) себя",
-        "kiss": "Поцеловал(-а) себя",
-        "lick": "Облизнул(-а) себя",
-        "cuddle": "Прижал(-а) себя к себе",
-        "handhold": "Взял(-а) себя за руку",
-        "nom": "Покормил(-а) себя",
-        "slap": "Дал(-а) себе пощёчину",
-        "bite": "Укусил(-а) себя",
-        "highfive": "Дал(-а) себе пять",
+        "pat": "{author} погладил(-а) себя",
+        "hug": "{author} обнял(-а) себя",
+        "kiss": "{author} поцеловал(-а) себя",
+        "lick": "{author} облизнул(-а) себя",
+        "cuddle": "{author} прижал(-а) себя к себе",
+        "handhold": "{author} взял(-а) себя за руку",
+        "nom": "{author} покормил(-а) себя",
+        "slap": "{author} дал(-а) себе пощёчину",
+        "bite": "{author} укусил(-а) себя",
+        "highfive": "{author} дал(-а) себе пять",
     }
 
     RP_DESCRIPTIONS_FISTASHKIN = {
-        "pat": "Погладил(-а) {user}",
-        "hug": "Обнял(-а) {user}",
-        "kiss": "Поцеловал(-а) {user}",
-        "lick": "Облизнул(-а) {user}",
-        "cuddle": "Прижал(-а) к себе {user}",
-        "handhold": "Взял(-а) за руку {user}",
-        "nom": "Покормил(-а) {user}",
-        "slap": "Дал(-а) пощечину {user}",
-        "bite": "Ай... За шо? qwq",
-        "highfive": "🖐️",
+        "pat": "{author} погладил(-а) {user}",
+        "hug": "{author} обнял(-а) {user}",
+        "kiss": "{author} поцеловал(-а) {user}",
+        "lick": "{author} облизнул(-а) {user}",
+        "cuddle": "{author} прижал(-а) к себе {user}",
+        "handhold": "{author} взял(-а) за руку {user}",
+        "nom": "{author} покормил(-а) {user}",
+        "slap": "{author} ну не надо так со мной :(",
+        "bite": "{author} ай... За шо ты так со мной?",
+        "highfive": "{author} держи пятюню 🖐️",
     }
 
     @commands.slash_command(
@@ -160,7 +159,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
             else self.RP_DESCRIPTIONS_FISTASHKIN
         )
         embed = disnake.Embed(
-            description=f"**{descriptions[choice].format(user=member.display_name)}**",
+            description=f"**{descriptions[choice].format(author=inter.author.display_name, user=member.display_name)}**",
             color=self.color.MAIN,
         )
         embed.set_image(url=await waifu_pics.get_image("sfw", choice))

@@ -12,7 +12,6 @@ class Checks(commands.Cog):
         self.main = main.MainSettings()
         self.color = enums.Color()
         self.otheremojis = constant.OtherEmojis()
-        self.rp = constant.RolePlay()
         self.db = database.DataBase()
 
     PERMISSIONS = {

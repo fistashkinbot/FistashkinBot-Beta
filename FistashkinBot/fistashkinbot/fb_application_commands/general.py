@@ -9,6 +9,7 @@ import requests
 from disnake.ext import commands
 from bs4 import BeautifulSoup
 from utils import constant, enums, main, links, database, paginator, checks
+from utils.bot_locale import BotLocal
 from helpers.settings_helper import *
 from humanize import naturaldelta
 
@@ -170,8 +171,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
 
         embed = disnake.Embed(
             description=bio,
-            color=color,
-            timestamp=inter.created_at,
+            color=color
         )
 
         embed.add_field(
@@ -214,7 +214,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
     async def serverinfo(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer()
         embed = disnake.Embed(
-            description="У сервера нет описания :("
+            description=None
             if not inter.guild.description
             else inter.guild.description,
             color=self.color.MAIN,
@@ -316,18 +316,19 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             f"<t:{round(inter.guild.created_at.timestamp())}:R>",
             inline=True,
         )
-        if inter.guild.premium_tier != 0:
-            embed.add_field(
-                name="Уровень Бустов:",
-                value=f"{inter.guild.premium_tier}",
-                inline=True,
-            )
+        embed.add_field(
+            name="Прочее:",
+            value=f"Стикеров: **{len(inter.guild.stickers)}**\n"
+            f"Эмодзи: **{len(inter.guild.emojis)}**\n"
+            f"Уровень буста: **{inter.guild.premium_tier}**\n"
+            f"Количество ролей: **{len(inter.guild.roles[:-1])}**",
+            inline=True,
+        )
 
         embed.set_thumbnail(url=inter.guild.icon.url if inter.guild.icon else None)
         embed.set_image(url=inter.guild.banner.url if inter.guild.banner else None)
         embed.set_footer(
-            text=f"ID: {inter.guild.id} • Звено: {shard_names[str(inter.guild.shard_id)]}",
-            icon_url=inter.guild.icon.url if inter.guild.icon else None,
+            text=f"ID: {inter.guild.id} • Звено: {shard_names[str(inter.guild.shard_id)]}"
         )
         embed.set_author(
             name=f"Информация о сервере {inter.guild.name}",
@@ -417,7 +418,11 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             )
             embed_pages.append(embed)
 
-        view = paginator.Paginator(embeds=embed_pages)
+        if len(embed_pages) > 1:
+            view = paginator.Paginator(inter, embeds=embed_pages)
+        else:
+            view = None
+
         message = await inter.edit_original_message(embed=embed_pages[0], view=view)
         view.message = message
 
@@ -433,14 +438,14 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         await inter.response.defer(ephemeral=False)
         developer = await self.bot.fetch_user(self.main.DEVELOPER_ID)
         embed = disnake.Embed(
-            description=f"👋 Привет! Меня зовут Фисташкин! Я небольшой бот с кучкой небольших команд!\n"
-            f"Детальная информация о моих возможностях по команде `/хелп`",
+            description=f"👋 Привет! Меня зовут Фисташкин! Я небольшой бот с кучкой небольших полезностей!\n"
+            f"\nМой префикс `/` (слэш), но ты также можешь просто @обратиться ко мне для справки. Взгляни на команду `/хелп` для более детальной информации о моих возможностях 🍪",
             colour=self.color.MAIN,
-            timestamp=inter.created_at,
         )
         embed.set_author(
-            name=f"Информация о боте {self.bot.user.name}",
+            name=f"{self.bot.user.name}",
             icon_url=self.bot.user.display_avatar.url,
+            url=self.main.BOT_SITE,
         )
         embed.add_field(
             name="Сборка:",
@@ -452,11 +457,11 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             value=f"<:riverya4life:1065581416357826560> [{developer}](https://discord.com/users/{developer.id})",
             inline=True,
         )
-        embed.add_field(
+        """embed.add_field(
             name="Дата создания:",
             value=f"<t:{round(self.bot.user.created_at.timestamp())}:D> (<t:{round(self.bot.user.created_at.timestamp())}:R>)",
             inline=False,
-        )
+        )"""
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         embed.set_footer(text=self.main.FOOTER_TEXT, icon_url=self.main.FOOTER_AVATAR)
         await inter.edit_original_message(embed=embed, view=links.Links())
@@ -577,7 +582,10 @@ class General(commands.Cog, name="🛠️ Утилиты"):
                 timestamp=inter.created_at,
             )
             embeds.append(embed)
-        view = paginator.Paginator(inter, embeds)
+        if len(embeds) > 1:
+            view = paginator.Paginator(inter, embeds)
+        else:
+            view = None
         message = await inter.edit_original_message(embed=embeds[0], view=view)
         view.message = message
 
@@ -761,13 +769,8 @@ class General(commands.Cog, name="🛠️ Утилиты"):
     async def logging_settings(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=True)
         embed = disnake.Embed(
-            title="Логгирование",
-            description=f"Логгирование - полезная вещь для модерации сервера. {self.bot.user.display_name} всё это настроит!\n"
-            "Пока система логов не будет работать, но вы можете заранее её настроить!\n\n"
-            "Чтобы настроить систему логгирования нужно:\n"
-            "1. Включить режим разработчика в **Настройки -> Расширенные -> Режим разработчика** для копирования ID.\n"
-            "2. Добавить ID канала для логгов.\n"
-            "3. Готово!",
+            title=BotLocal("slash_command.setting_logs.embed.title").get(inter.locale),
+            description=BotLocal("slash_command.setting_logs.embed.description").get(inter.locale).format(user=self.bot.user.name),
             color=self.color.DARK_GRAY,
         )
         view = LogsSetupButtons(inter)

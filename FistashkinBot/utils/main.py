@@ -9,41 +9,42 @@ from utils import database, main, constant, checks
 
 
 class MainSettings:
-    def get_seasonal_copyright():
-        now = datetime.datetime.now()
-        if (now.month == 10 and now.day >= 31) or (now.month == 11 and now.day <= 2):
-            return f"Riverya4life © {now.year} • All rights reserved 🎃"
-
-        elif (
-            25 <= now.day <= 31
-            and now.month == 12
-            or (1 <= now.day <= 15 and now.month == 1)
-        ):
-            return f"Riverya4life © {now.year} • All rights reserved ❄️"
-
-        else:
-            return f"Riverya4life © {now.year} • All rights reserved 🐒"
-
-    FOOTER_TEXT = get_seasonal_copyright()
-    FOOTER_AVATAR = "https://github.com/riverya4life.png"
     DEVELOPER_ID = 668453200457760786
     BOT_ID = 991338113630752928
-    BOT_VERSION = "v1.7 (<t:1705922655:d>)"
+    BOT_VERSION = "v1.7.1660 (<t:1705922655:d>)"
     BOT_EMOJI = "<:fistashkinbot:1145318360196845649>"
 
     GITHUB_AUTHOR = "https://github.com/riverya4life"
     DISCORD_BOT_SERVER = "https://discord.gg/H9XCZSReMj"
+    DISCORD_BOT_SERVER_ID = 1037792926383747143
     BOT_SITE = "https://fistashkinbot.github.io/"
     BOT_INVITE = "https://discord.com/api/oauth2/authorize?client_id=991338113630752928&permissions=8&scope=bot%20applications.commands"
     GITHUB_REPOSITORY = "https://github.com/fistashkinbot/FistashkinBot-Beta"
     PATREON = "https://www.patreon.com/FistashkinBot"
     TELEGRAM = "https://t.me/riverya4lifeoff"
 
+    def get_seasonal_copyright():
+        now = datetime.datetime.now()
+        if (now.month == 10 and now.day >= 31) or (now.month == 11 and now.day <= 2):
+            return f"Риверька © {now.year} Все права защищены 🎃"
+
+        elif (
+            25 <= now.day <= 31
+            and now.month == 12
+            or (1 <= now.day <= 15 and now.month == 1)
+        ):
+            return f"Риверька © {now.year} Все права защищены ❄️"
+
+        else:
+            return f"Риверька © {now.year} Все права защищены 🍪"
+
+    FOOTER_TEXT = get_seasonal_copyright()
+    FOOTER_AVATAR = "https://github.com/riverya4life.png"
+
 
 class EconomySystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.rp = constant.RolePlay()
         self.db = database.DataBase()
         self.otheremojis = constant.OtherEmojis()
         self.checks = checks.Checks(self.bot)

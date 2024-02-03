@@ -33,7 +33,7 @@ class Enum:
         while len(integer_part) > 0:
             groups.insert(0, integer_part[-3:])
             integer_part = integer_part[:-3]
-        formatted_number = " ".join(groups)
+        formatted_number = ",".join(groups)
         if len(parts) == 2:
             formatted_number += "." + parts[1]
 

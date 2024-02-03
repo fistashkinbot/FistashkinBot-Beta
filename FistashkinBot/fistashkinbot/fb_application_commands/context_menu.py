@@ -59,7 +59,6 @@ class ContextMenu(commands.Cog):
         member: disnake.Member = None,
     ):
         await inter.response.defer(ephemeral=True)
-
         data = await self.db.get_data(member)
         registerf = disnake.utils.format_dt(member.created_at, style="f")
         registerr = disnake.utils.format_dt(member.created_at, style="R")
@@ -69,7 +68,9 @@ class ContextMenu(commands.Cog):
         level = self.enum.format_large_number(data["level"])
         xp = self.enum.format_large_number(data["xp"])
         total_xp = self.enum.format_large_number(data["total_xp"])
-        xp_to_lvl = self.enum.format_large_number(500 + 100 * data["level"])
+        xp_to_lvl = self.enum.format_large_number(
+            5 * (data["level"] ** 2) + 50 * data["level"] + 100
+        )
         balance = self.enum.format_large_number(data["balance"])
         bio = await self.db.get_bio(member)
 
@@ -89,8 +90,8 @@ class ContextMenu(commands.Cog):
             response.append(self.profile.UPDATED_NICKNAME)  # Updated Nickname
 
         description = [
-            f"**Имя пользователя:** {member} ({member.mention})",
-            f"**Статус:** {self.profile.STATUS[member.status]}",
+            f"**Имя {'бота' if member.bot else 'участника'}:** {member} ({member.mention})",
+            f"**Статус:** {self.profile.STATUS[member.status]}",  # **| Устройство:** {'`📱 Mobile`' if member.is_on_mobile() else '`🖥️ Desktop`'}
             f"**Присоединился:** {joinedf} ({joinedr})",
             f"**Дата регистрации:** {registerf} ({registerr})",
         ]
@@ -98,15 +99,20 @@ class ContextMenu(commands.Cog):
             if member.activities:
                 for activity in member.activities:
                     if activity.type == disnake.ActivityType.playing:
-                        description.append(f"**Играет в:** {activity.name}")
-                    if activity.type == disnake.ActivityType.streaming:
+                        description.append(
+                            f"**Играет в:** {activity.name} | <t:{round(activity.created_at.timestamp())}:R>"
+                        )
+
+                    elif activity.type == disnake.ActivityType.streaming:
                         description.append(f"**Стримит:** {activity.name}")
-                    if activity.type == disnake.ActivityType.watching:
+
+                    elif activity.type == disnake.ActivityType.watching:
                         description.append(f"**Смотрит:** {activity.name}")
+
                     if activity.type == disnake.ActivityType.listening:
                         if isinstance(activity, disnake.Spotify):
                             description.append(
-                                f"**Cлушает Spotify:** {self.profile.SPOTIFY} [{activity.artist} - {activity.title}]({activity.track_url})"
+                                f"**Cлушает Spotify:** {self.profile.SPOTIFY} **[{activity.title} | {', '.join(activity.artists)}]({activity.track_url})**"
                             )
                         else:
                             description.append(f"**Слушает:** {activity.name}")
@@ -143,7 +149,7 @@ class ContextMenu(commands.Cog):
             )
             embed.add_field(
                 name="Экономика",
-                value=f"Баланс:\n {balance} {self.economy.CURRENCY_NAME}",
+                value=f"{balance} {self.economy.CURRENCY_NAME}",
                 inline=True,
             )
 
@@ -154,7 +160,7 @@ class ContextMenu(commands.Cog):
         embed.set_image(url=user.banner.url if user.banner else None)
         embed.set_footer(text=f"ID: {member.id}", icon_url=member.display_avatar.url)
         embed.set_author(
-            name=f"Информация о пользователе {member.display_name}",
+            name=f"Информация о {'боте' if member.bot else 'участнике'} {member.display_name}",
             icon_url=member.display_avatar.url,
         )
         await inter.edit_original_message(embed=embed)

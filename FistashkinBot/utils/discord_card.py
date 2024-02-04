@@ -236,37 +236,41 @@ class RankCard:
         image.seek(0)
         return image
 
-class LevelCard():
 
+class LevelCard:
     def __init__(self):
-        self.level : int = 1
-        self.xp : int = 0
-        self.required_xp : int = 1
-        self.total_xp : int = 1
-        self.name : str = None
-        self.avatar : str = None
-        self.color : str = "#e39e7e"
-        self.back_color : str = "#7A5544"
-        self.path : str = "https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"
-        self.is_rounded : bool = False
+        self.level: int = 1
+        self.xp: int = 0
+        self.required_xp: int = 1
+        self.total_xp: int = 1
+        self.name: str = None
+        self.avatar: str = None
+        self.color: str = "#e39e7e"
+        self.back_color: str = "#7A5544"
+        self.path: str = (
+            "https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"
+        )
+        self.is_rounded: bool = False
 
     async def create(self):
-        if(self.path.startswith('https://')):
+        if self.path.startswith("https://"):
             bgc = await load_image_async(str(self.path))
             background = Editor(bgc).resize((900, 300))
         else:
             background = Editor(self.path).resize((900, 300))
-        if(self.avatar != None):
+        if self.avatar != None:
             profile = await load_image_async(str(self.avatar))
-            if(self.is_rounded):
+            if self.is_rounded:
                 profile = Editor(profile).resize((150, 150)).circle_image()
             else:
                 profile = Editor(profile).resize((150, 150))
             background.paste(profile.image, (30, 40))
 
-        poppins = Font(path = "data/assets/regular.ttf").poppins(size=40)
-        poppins_small = Font(path = "data/assets/regular.ttf").poppins(size=30)
-        background.rectangle((30, 210), width=840, height=50, fill=self.back_color, radius=30)
+        poppins = Font(path="data/assets/regular.ttf").poppins(size=40)
+        poppins_small = Font(path="data/assets/regular.ttf").poppins(size=30)
+        background.rectangle(
+            (30, 210), width=840, height=50, fill=self.back_color, radius=30
+        )
         if self.xp != 0:
             background.bar(
                 (30, 210),
@@ -281,8 +285,7 @@ class LevelCard():
         background.rectangle((200, 100), width=350, height=10, fill=self.color)
         background.text(
             (200, 130),
-            f"Level : {self.level}"
-            + f"      XP : {self.xp} / {self.required_xp}",
+            f"Level : {self.level}" + f"      XP : {self.xp} / {self.required_xp}",
             font=poppins_small,
             color="white",
         )

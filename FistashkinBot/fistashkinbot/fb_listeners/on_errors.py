@@ -37,7 +37,9 @@ class OnErrors(commands.Cog):
 
     @commands.Cog.listener(disnake.Event.slash_command_error)
     @commands.Cog.listener(disnake.Event.error)
-    async def on_slash_command_error(self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError):
+    async def on_slash_command_error(
+        self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError
+    ):
         # error = getattr(error, "original", error)
         logger.error(error)
 

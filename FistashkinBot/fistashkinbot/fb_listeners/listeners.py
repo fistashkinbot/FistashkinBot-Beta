@@ -19,7 +19,9 @@ class Listeners(commands.Cog):
 
     @tasks.loop(minutes=15)
     async def change_activity(self):
-        await self.bot.change_presence(status=disnake.Status.idle, activity=random.choice(self.activity.ACTIVITY))
+        await self.bot.change_presence(
+            status=disnake.Status.idle, activity=random.choice(self.activity.ACTIVITY)
+        )
 
     @commands.Cog.listener(disnake.Event.ready)
     async def on_ready(self):
@@ -83,8 +85,7 @@ class Listeners(commands.Cog):
             ]
             await member.send(
                 embed=disnake.Embed(
-                    description="".join(description), 
-                    color=self.color.MAIN
+                    description="".join(description), color=self.color.MAIN
                 ),
                 components=[
                     disnake.ui.Button(

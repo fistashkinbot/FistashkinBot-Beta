@@ -39,7 +39,6 @@ class OwnerInfo(commands.Cog):
 
         if message.content.lower() == ("developer_cmd_welcomer-test"):
             if message.author.id == self.main.DEVELOPER_ID:
-
                 description = [
                     f":flag_gb: :flag_us:\n"
                     f"Hello, {message.author.mention}! Welcome to the FistashkinBot community and support guild!\n"
@@ -53,8 +52,7 @@ class OwnerInfo(commands.Cog):
                 ]
                 await message.author.send(
                     embed=disnake.Embed(
-                        description="".join(description), 
-                        color=self.color.MAIN
+                        description="".join(description), color=self.color.MAIN
                     ),
                     components=[
                         disnake.ui.Button(

@@ -9,7 +9,7 @@ class TempVoice(commands.Cog):
         self.bot = bot
         self.db = database.DataBase()
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.voice_state_update)
     async def on_voice_state_update(
         self,
         member: disnake.Member,

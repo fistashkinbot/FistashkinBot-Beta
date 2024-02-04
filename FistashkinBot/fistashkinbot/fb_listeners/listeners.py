@@ -1,9 +1,11 @@
 import disnake
 import datetime
 import random
+import platform
 
-from disnake.ext import commands
-from utils import enums, main, automod, links, checks
+from disnake.ext import commands, tasks
+from utils import enums, main, automod, links, checks, fistashkin_status
+from loguru import logger
 
 
 class Listeners(commands.Cog):
@@ -11,10 +13,61 @@ class Listeners(commands.Cog):
         self.bot = bot
         self.color = enums.Color()
         self.main = main.MainSettings()
+        self.activity = fistashkin_status.BotActivity()
         self.automod = automod.Automod()
         self.checks = checks.Checks(self.bot)
 
-    @commands.Cog.listener()
+    @tasks.loop(minutes=15)
+    async def change_activity(self):
+        await self.bot.change_presence(status=disnake.Status.idle, activity=random.choice(self.activity.ACTIVITY))
+
+    @commands.Cog.listener(disnake.Event.ready)
+    async def on_ready(self):
+        developer = await self.bot.fetch_user(self.main.DEVELOPER_ID)
+        START_MESSAGE = f"""
+                     ______   _         _                   _       _      _           ____            _
+                    |  ____| (_)       | |                 | |     | |    (_)         |  _ \          | |
+                    | |__     _   ___  | |_    __ _   ___  | |__   | | __  _   _ __   | |_) |   ___   | |_
+                    |  __|   | | / __| | __|  / _` | / __| | '_ \  | |/ / | | | '_ \  |  _ <   / _ \  | __|
+                    | |      | | \__ \ | |_  | (_| | \__ \ | | | | |   <  | | | | | | | |_) | | (_) | | |_
+                    |_|      |_| |___/  \__|  \__,_| |___/ |_| |_| |_|\_\ |_| |_| |_| |____/   \___/   \__|
+        ----------------------------------------------------------------------------------------------------------------
+
+                                                         Официальный бот!
+                                                      ----------------------
+                              Discord бот! / Разработчик - {developer.display_name} / Дата создания: {self.bot.user.created_at.strftime("%d.%m.%Y")}
+                                                      ----------------------
+                              -----------------------/     {self.bot.user.display_name}    \----------------------
+
+        ################################################################################################################
+
+        -
+        Разработчик - {developer.display_name} (@{developer} ID: {developer.id})
+        Бот - {self.bot.user} (ID: {self.bot.user.id})
+        Пинг бота - {round(self.bot.latency * 1000)} мс
+        Шардов - {self.bot.shard_count}
+
+        Язык програмирования - Python {platform.python_version()}
+        Библиотека разработки - {disnake.__title__} {disnake.__version__}
+        -
+        """
+        self.change_activity.start()
+        vc = disnake.utils.get(
+            self.bot.get_guild(1037792926383747143).channels, id=1191523826585059419
+        )
+        await vc.guild.change_voice_state(channel=vc, self_mute=False, self_deaf=False)
+        logger.info(START_MESSAGE)
+
+    @commands.Cog.listener(disnake.Event.connect)
+    async def on_connect(self):
+        logger.info(f"Бот присоединился: {self.bot.user.name} ({self.bot.user.id})")
+        logger.info(f"Пинг: {round(self.bot.latency * 1000)}мс")
+
+    @commands.Cog.listener(disnake.Event.disconnect)
+    async def on_disconnect(self):
+        logger.error(f"Бот отключен")
+
+    @commands.Cog.listener(disnake.Event.member_join)
     async def on_member_join(self, member):
         if member.guild.id == self.main.DISCORD_BOT_SERVER_ID:
             description = [
@@ -30,7 +83,8 @@ class Listeners(commands.Cog):
             ]
             await member.send(
                 embed=disnake.Embed(
-                    description="".join(description), color=self.color.MAIN
+                    description="".join(description), 
+                    color=self.color.MAIN
                 ),
                 components=[
                     disnake.ui.Button(
@@ -42,7 +96,7 @@ class Listeners(commands.Cog):
                 ],
             )
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.guild_join)
     async def on_guild_join(self, guild):
         developer = await self.bot.fetch_user(self.main.DEVELOPER_ID)
         inviter = await guild.audit_logs(
@@ -85,7 +139,7 @@ class Listeners(commands.Cog):
 
         await self.automod.automod(guild)
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.message)
     async def on_message(self, message):
         if message.author.bot or not message.guild or message.author == self.bot.user:
             return

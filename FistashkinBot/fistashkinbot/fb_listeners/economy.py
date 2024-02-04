@@ -14,7 +14,7 @@ class Economy_Event(commands.Cog):
         self.economy = main.EconomySystem(self.bot)
         self.enum = enums.Enum()
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.message)
     async def on_message(self, message):
         if message.author.bot or not message.guild or message.author == self.bot.user:
             return

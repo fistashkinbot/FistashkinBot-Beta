@@ -4,6 +4,7 @@ import disnake
 
 from disnake.ext import commands
 from jishaku.modules import find_extensions_in
+from loguru import logger
 
 
 class FistashkinBot(commands.AutoShardedInteractionBot):
@@ -13,6 +14,8 @@ class FistashkinBot(commands.AutoShardedInteractionBot):
             sync_commands_debug=False,
             chunk_guilds_at_startup=False,
             reload=True,
+            enable_debug_events=True,
+            # test_guilds=[1156719063087726613],
             *args,
         )
 
@@ -21,6 +24,6 @@ class FistashkinBot(commands.AutoShardedInteractionBot):
             for cog in find_extensions_in(f"fistashkinbot/{folder}"):
                 try:
                     self.load_extension(cog)
-                    print(f"[LOAD] {cog} loaded!")
+                    logger.info(f"[LOAD] {cog} loaded!")
                 except Exception as e:
-                    print(f"[ERROR] {folder}.{cog} fucked up by Hueila: {e}")
+                    logger.error(f"[ERROR] {folder}.{cog} fucked up by Hueila: {e}")

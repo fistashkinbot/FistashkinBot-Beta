@@ -11,7 +11,7 @@ class Logs(commands.Cog):
         self.db = database.DataBase()
         self.color = enums.Color()
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.member_join)
     async def on_member_join(self, member):
         log_channel = await self.db.get_log_channel(member.guild.id)
         if log_channel is not None:
@@ -35,7 +35,7 @@ class Logs(commands.Cog):
                 embed.set_thumbnail(url=member.display_avatar.url)
                 await channel.send(embed=embed)
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.member_remove)
     async def on_member_remove(self, member):
         log_channel = await self.db.get_log_channel(member.guild.id)
         if log_channel is not None:
@@ -62,7 +62,7 @@ class Logs(commands.Cog):
                 embed.set_thumbnail(url=member.display_avatar.url)
                 await channel.send(embed=embed)
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.message_delete)
     async def on_message_delete(self, message):
         if message.author.bot:
             return
@@ -102,7 +102,7 @@ class Logs(commands.Cog):
 
                     await channel.send(embed=embed)
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.message_edit)
     async def on_message_edit(self, before, after):
         if after.content == before.content:
             return
@@ -153,7 +153,7 @@ class Logs(commands.Cog):
 
                     await channel.send(embed=embed)
 
-    @commands.Cog.listener()
+    @commands.Cog.listener(disnake.Event.member_update)
     async def on_member_update(self, before, after):
         if before.display_name != after.display_name:
             log_channel = await self.db.get_log_channel(after.guild.id)

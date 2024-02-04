@@ -168,7 +168,10 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ):
             bio = None
 
-        embed = disnake.Embed(description=bio, color=color)
+        embed = disnake.Embed(
+            description=bio,
+            color=color
+        )
 
         embed.add_field(
             name="Основная информация",

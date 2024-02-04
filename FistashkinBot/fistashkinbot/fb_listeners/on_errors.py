@@ -36,22 +36,21 @@ class OnErrors(commands.Cog):
         self.checks = checks.Checks(self.bot)
 
     @commands.Cog.listener(disnake.Event.slash_command_error)
-    async def on_slash_command_error(
-        self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError
-    ):
+    @commands.Cog.listener(disnake.Event.error)
+    async def on_slash_command_error(self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError):
         # error = getattr(error, "original", error)
         logger.error(error)
 
         if isinstance(error, commands.MissingPermissions):
             return await self.checks.check_missing_permissions(inter, error)
 
-        elif isinstance(error, commands.BotMissingPermissions):
+        if isinstance(error, commands.BotMissingPermissions):
             return await self.checks.check_missing_permissions(inter, error)
 
-        elif isinstance(error, commands.NotOwner):
+        if isinstance(error, commands.NotOwner):
             return await self.checks.check_not_owner(inter)
 
-        elif isinstance(error, commands.CommandOnCooldown):
+        if isinstance(error, commands.CommandOnCooldown):
             cooldown_time = datetime.datetime.now() + datetime.timedelta(
                 seconds=int(round(error.retry_after))
             )
@@ -61,13 +60,13 @@ class OnErrors(commands.Cog):
                 text=f"⏱️ Вы достигли кулдауна этой команды. Вы сможете использовать её вновь {dynamic_time}!",
             )
 
-        elif isinstance(error, commands.errors.MemberNotFound):
+        if isinstance(error, commands.errors.MemberNotFound):
             return await self.checks.check_member_not_found(inter)
 
-        elif isinstance(error, commands.NSFWChannelRequired):
+        if isinstance(error, commands.NSFWChannelRequired):
             return await self.checks.check_is_nsfw(inter)
 
-        elif isinstance(error, CustomError):
+        if isinstance(error, CustomError):
             return await self.checks.check_unknown_exception(
                 inter,
                 text=f"❌ Произошла неизвестная ошибка, пожалуйста, отправьте ошибку на [сервер технической поддержки](https://discord.com/channels/1037792926383747143/1066328008664813610)\n\n"

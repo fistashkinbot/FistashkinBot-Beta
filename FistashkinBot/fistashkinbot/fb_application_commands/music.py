@@ -9,6 +9,7 @@ from wavelink.ext import spotify
 from disnake.enums import ButtonStyle
 from utils import main, enums, constant
 from core import config
+from loguru import logger
 
 
 class CustomPlayer(wavelink.Player):
@@ -184,7 +185,7 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
 
     @commands.Cog.listener()
     async def on_wavelink_node_ready(self, node: wavelink.Node):
-        print(f"Node: <{node.identifier}> is ready!")
+        logger.info(f"Node: <{node.identifier}> is ready!")
 
     @commands.slash_command(
         name=disnake.Localized("play", key="MUSIC_PLAY_COMMAND_NAME"),
@@ -308,7 +309,7 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
     async def play_youtube_song(self, inter, query: str, vc: CustomPlayer):
         try:
             query = re.sub(r"&t=\d+", "", query)
-            print(query)
+            logger.info(query)
             track = await wavelink.NodePool.get_node().get_tracks(
                 wavelink.YouTubeTrack, query
             )

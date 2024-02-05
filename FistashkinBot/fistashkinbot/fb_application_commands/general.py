@@ -155,11 +155,6 @@ class General(commands.Cog, name="🛠️ Утилиты"):
                         else:
                             description.append(f"**Слушает:** {activity.name}")
 
-        if member.top_role == member.guild.default_role or member.bot:
-            color = self.color.DARK_GRAY
-        else:
-            color = member.top_role.color
-
         if (
             member.bot
             or member != inter.author
@@ -168,7 +163,13 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ):
             bio = None
 
-        embed = disnake.Embed(description=bio, color=color)
+        embed = disnake.Embed(
+            description=bio,
+            color=self.color.DARK_GRAY
+            if member.top_role == member.guild.default_role or member.bot
+            else member.top_role.color,
+            timestamp=inter.created_at,
+        )
 
         embed.add_field(
             name="Основная информация",
@@ -405,8 +406,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         roles_count = self.enum.format_large_number(len(inter.guild.roles[:-1]))
         for i, page in enumerate(pages):
             embed = disnake.Embed(
-                description="\n".join([role.mention for role in page]),
-                timestamp=inter.created_at,
+                description="\n".join([role.mention for role in page])
             )
             embed.set_author(
                 name=f"Роли сервера {inter.guild.name} [{roles_count}]",
@@ -542,6 +542,45 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         await inter.edit_original_message(embed=embed)
 
     @commands.slash_command(
+        name=disnake.Localized("roleinfo", key="ROLEINFO_COMMAND_NAME"),
+        description=disnake.Localized(
+            "Displays information about any role on the server.",
+            key="ROLEINFO_COMMAND_DESCRIPTION",
+        ),
+        dm_permission=False,
+    )
+    async def role_info(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        role: disnake.Role = commands.Param(
+            name=disnake.Localized("role", key="TARGET_ROLE_NAME"),
+            description=disnake.Localized(
+                "Select a role.", key="TARGET_ROLE_DESCRIPTION"
+            ),
+        ),
+    ):
+        await inter.response.defer(ephemeral=False)
+        role_info_array = [
+            f"Цвет роли: **{hex(role.color.value)}**",
+            f"Интеграция: **{'Да' if role.is_integration() else 'Нет'}**",
+            f"Участников на этой роли: **{len(role.members)}**",
+            f"ID роли: **{role.id}**",
+            f"Упоминание роли: {role.mention}",
+            f"Позиция: **{role.position}**",
+            f"Роль создана: <t:{round(role.created_at.timestamp())}:D>",
+        ]
+        embed = disnake.Embed(description="\n".join(role_info_array), color=role.color)
+        embed.set_author(
+            name=f"Информация о роли {role.name}",
+            icon_url=inter.guild.icon.url if inter.guild.icon else None,
+        )
+
+        if role.icon:
+            embed.set_thumbnail(url=role.icon.url)
+
+        await inter.edit_original_message(embed=embed)
+
+    @commands.slash_command(
         name=disnake.Localized("clist", key="CLIST_COMMAND_NAME"),
         description=disnake.Localized(
             "Displays a list of members with a specific role.",
@@ -571,13 +610,16 @@ class General(commands.Cog, name="🛠️ Утилиты"):
 
         embeds = []
         for i, page_data in enumerate(paginated_data):
-            embed = disnake.Embed(
-                title=f"Все участники с ролью {role} [{member_count}]\n",
-                description=f"{page_data}\n",
-                color=role.color,
-                timestamp=inter.created_at,
+            embed = disnake.Embed(description=f"{page_data}\n", color=role.color)
+            embed.set_author(
+                name=f"Все участники с ролью {role} [{member_count}]\n",
+                icon_url=inter.guild.icon.url if inter.guild.icon else None,
             )
             embeds.append(embed)
+
+        if role.icon:
+            embed.set_thumbnail(url=role.icon.url)
+
         if len(embeds) > 1:
             view = paginator.Paginator(inter, embeds)
         else:
@@ -792,6 +834,7 @@ class BioButtons(disnake.ui.View):
         for child in self.children:
             child.disabled = True
         await self.message.edit(view=None)
+        self.stop()
 
     @disnake.ui.button(
         label="Установить биографию", emoji="✨", style=disnake.ButtonStyle.green

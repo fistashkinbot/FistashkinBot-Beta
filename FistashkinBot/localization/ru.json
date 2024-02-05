@@ -43,6 +43,9 @@
 	"CLIST_COMMAND_NAME": "клист",
     "CLIST_COMMAND_DESCRIPTION": "Отображает список участников с выбранной ролью.",
 
+	"ROLEINFO_COMMAND_NAME": "рольинфо",
+    "ROLEINFO_COMMAND_DESCRIPTION": "Отображает информацию о любой роли на сервере.",
+
 	"USER_BIO_COMMAND_NAME": "осебе",
 	"USER_BIO_COMMAND_DESCRIPTION": "Изменяет биографию участника.",
 

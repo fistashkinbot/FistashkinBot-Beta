@@ -25,28 +25,28 @@ class TempVoice(commands.Cog):
                 category_id = trigger_info["category_id"]
                 main_category = disnake.utils.get(guild.categories, id=category_id)
 
-                # категория создания канала
-                private_channel = await guild.create_voice_channel(
-                    f"Комната {member.display_name}",  # название канала
-                    category=main_category,  # категория в которой создастся канал
-                    bitrate=96000,  # установить битрейт 96
+                permissions = {
+                    member: disnake.PermissionOverwrite(
+                        connect=True,
+                        mute_members=True,
+                        move_members=True,
+                        manage_channels=True,
+                    )
+                }
+
+                private_voice_channel = await guild.create_voice_channel(
+                    name=f"Комната {member.display_name}",
+                    category=main_category,
+                    bitrate=96000,
+                    overwrites=permissions,
                 )
-                await private_channel.set_permissions(
-                    member,
-                    connect=False,
-                    mute_members=True,
-                    move_members=True,
-                    manage_channels=True,
-                )  # установить права на канал его создателю
-                await member.move_to(
-                    private_channel
-                )  # переместить пользователя в этот канал
 
-                def check(x, y, z):
-                    return len(private_channel.members) == 0
-
-                await self.bot.wait_for("voice_state_update", check=check)
-                await private_channel.delete()
+                await member.move_to(private_voice_channel)
+                await self.bot.wait_for(
+                    "voice_state_update",
+                    check=lambda x, y, z: len(private_voice_channel.members) == 0,
+                )
+                await private_voice_channel.delete()
 
 
 def setup(bot):

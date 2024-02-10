@@ -67,7 +67,7 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener(disnake.Event.disconnect)
     async def on_disconnect(self):
-        logger.error(f"Бот отключен")
+        logger.warning(f"Бот отключен")
 
     @commands.Cog.listener(disnake.Event.member_join)
     async def on_member_join(self, member):
@@ -126,19 +126,68 @@ class Listeners(commands.Cog):
         )
         embed.set_footer(text=self.main.FOOTER_TEXT, icon_url=self.main.FOOTER_AVATAR)
 
-        await inviter_user.send(
-            embed=embed,
-            components=[
-                disnake.ui.Button(
-                    label=f"С любовью разработчик {developer.display_name}",
-                    emoji="❤️",
-                    style=disnake.ButtonStyle.gray,
-                    disabled=True,
+        try:
+            await inviter_user.send(
+                embed=embed,
+                components=[
+                    disnake.ui.Button(
+                        label=f"С любовью разработчик {developer.display_name}",
+                        emoji="❤️",
+                        style=disnake.ButtonStyle.gray,
+                        disabled=True,
+                    )
+                ],
+            )
+        except disnake.Forbidden:
+            if guild.system_channel is not None:
+                await guild.system_channel.send.send(
+                    embed=embed,
+                    components=[
+                        disnake.ui.Button(
+                            label=f"С любовью разработчик {developer.display_name}",
+                            emoji="❤️",
+                            style=disnake.ButtonStyle.gray,
+                            disabled=True,
+                        )
+                    ],
                 )
-            ],
-        )
 
-        await self.automod.automod(guild)
+        channel = self.bot.get_channel(1200049608898912317)
+        add_embed = disnake.Embed(
+            title=f"Меня добавили на {guild.name}",
+            description=f"Теперь у меня **{len(self.bot.guilds)}** серверов",
+            color=self.color.MAIN,
+        )
+        add_embed.add_field(name=Участников, value=len(guild.members))
+        add_embed.add_field(
+            name=Ботов, value=len([i.id for i in guild.members if i.bot])
+        )
+        add_embed.set_thumbnail(
+            url=guild.icon.url if guild.icon else guild.owner.display_avatar.url
+        )
+        await channel.send(embed=add_embed)
+
+        try:
+            await self.automod.automod(guild)
+        except disnake.Forbidden:
+            pass
+
+    @commands.Cog.listener(disnake.Event.guild_remove)
+    async def on_guild_remove(self, guild):
+        channel = self.bot.get_channel(1200049608898912317)
+        add_embed = disnake.Embed(
+            title=f"Меня убрали с {guild.name}",
+            description=f"Теперь у меня **{len(self.bot.guilds)}** серверов",
+            color=self.color.MAIN,
+        )
+        add_embed.add_field(name=Участников, value=len(guild.members))
+        add_embed.add_field(
+            name=Ботов, value=len([i.id for i in guild.members if i.bot])
+        )
+        add_embed.set_thumbnail(
+            url=guild.icon.url if guild.icon else guild.owner.display_avatar.url
+        )
+        await channel.send(embed=add_embed)
 
     @commands.Cog.listener(disnake.Event.message)
     async def on_message(self, message):

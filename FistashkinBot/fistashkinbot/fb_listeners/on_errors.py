@@ -26,6 +26,7 @@ PERMISSIONS = {
     "manage_members": "Управлять участниками",
     "view_channel": "Просматривать канал",
     "manage_roles": "Управлять ролями",
+    "moderate_members": "Управлять участниками",
 }
 
 
@@ -33,47 +34,60 @@ class OnErrors(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.color = enums.Color()
-        self.checks = checks.Checks(self.bot)
 
     @commands.Cog.listener(disnake.Event.slash_command_error)
     @commands.Cog.listener(disnake.Event.error)
     async def on_slash_command_error(
         self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError
     ):
-        # error = getattr(error, "original", error)
+        error = getattr(error, "original", error)
         logger.error(error)
 
-        if isinstance(error, commands.MissingPermissions):
-            return await self.checks.check_missing_permissions(inter, error)
+        await inter.response.defer(ephemeral=True)
 
-        if isinstance(error, commands.BotMissingPermissions):
-            return await self.checks.check_missing_permissions(inter, error)
+        embed = disnake.Embed(title=f"Произошла ошибка", color=self.color.RED)
 
-        if isinstance(error, commands.NotOwner):
-            return await self.checks.check_not_owner(inter)
+        embed.description = DESCRIPTIONS.get(
+            type(error) if not "50013" in str(error) else 50013,
+            f"❌ Произошла неизвестная ошибка, пожалуйста, отправьте ошибку на [сервер технической поддержки](https://discord.com/channels/1037792926383747143/1066328008664813610)\n```py\n{str(error)}```",
+        )
 
-        if isinstance(error, commands.CommandOnCooldown):
+        if isinstance(
+            error, (commands.MissingPermissions, commands.BotMissingPermissions)
+        ):
+            embed.add_field(
+                name="Недостающие права",
+                value=", ".join(
+                    [PERMISSIONS.get(i, i) for i in error.missing_permissions]
+                ),
+            )
+
+        elif isinstance(error, commands.CommandOnCooldown):
             cooldown_time = datetime.datetime.now() + datetime.timedelta(
                 seconds=int(round(error.retry_after))
             )
             dynamic_time = disnake.utils.format_dt(cooldown_time, style="R")
-            return await self.checks.check_cooldown(
-                inter,
-                text=f"⏱️ Вы достигли кулдауна этой команды. Вы сможете использовать её вновь {dynamic_time}!",
+            embed.description = f"⏱️ Вы достигли кулдауна этой команды. Вы сможете использовать её вновь {dynamic_time}!"
+
+        elif isinstance(error, commands.NSFWChannelRequired):
+            channels = list(
+                map(
+                    lambda n: n.mention,
+                    filter(lambda x: x.nsfw, inter.guild.text_channels),
+                )
             )
+            channel_list = " ".join(channels)
+            if len(channels) != 0:
+                embed.add_field(
+                    name="Поэтому воспользуйтесь одним из NSFW-каналов:",
+                    value=channel_list,
+                )
 
-        if isinstance(error, commands.errors.MemberNotFound):
-            return await self.checks.check_member_not_found(inter)
+        elif not type(error) in DESCRIPTIONS.keys():
+            if isinstance(error, CustomError):
+                embed.add_field(name="Описание ошибки", value=error)
 
-        if isinstance(error, commands.NSFWChannelRequired):
-            return await self.checks.check_is_nsfw(inter)
-
-        if isinstance(error, CustomError):
-            return await self.checks.check_unknown_exception(
-                inter,
-                text=f"❌ Произошла неизвестная ошибка, пожалуйста, отправьте ошибку на [сервер технической поддержки](https://discord.com/channels/1037792926383747143/1066328008664813610)\n\n"
-                f"**Код ошибки:**\n```{error}```",
-            )
+        await inter.edit_original_message(embed=embed)
 
 
 def setup(bot):

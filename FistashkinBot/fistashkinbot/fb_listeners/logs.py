@@ -23,6 +23,9 @@ class Logs(commands.Cog):
                 embed = disnake.Embed(
                     description=f"{'Бот' if member.bot else 'Участник'} **{member}** ({member.mention}) присоединился к серверу",
                     color=self.color.MAIN,
+                    timestamp=datetime.datetime.fromtimestamp(
+                        datetime.datetime.now().timestamp()
+                    ),
                 )
                 embed.add_field(
                     name="Дата регистрации",
@@ -49,6 +52,9 @@ class Logs(commands.Cog):
                 embed = disnake.Embed(
                     description=f"{'Бот' if member.bot else 'Участник'} **{member}** ({member.mention}) покинул сервер",
                     color=self.color.MAIN,
+                    timestamp=datetime.datetime.fromtimestamp(
+                        datetime.datetime.now().timestamp()
+                    ),
                 )
                 if not member.top_role == member.guild.default_role:
                     embed.add_field(
@@ -75,6 +81,9 @@ class Logs(commands.Cog):
                     embed = disnake.Embed(
                         description=f"Сообщение было удалено",
                         color=self.color.MAIN,
+                        timestamp=datetime.datetime.fromtimestamp(
+                            datetime.datetime.now().timestamp()
+                        ),
                     )
                     embed.add_field(
                         name="Сообщение", value=f"```{message.content}```", inline=False
@@ -120,6 +129,9 @@ class Logs(commands.Cog):
                     embed = disnake.Embed(
                         description=f"[Сообщение]({after.jump_url}) было отредактировано",
                         color=self.color.MAIN,
+                        timestamp=datetime.datetime.fromtimestamp(
+                            datetime.datetime.now().timestamp()
+                        ),
                     )
                     embed.add_field(
                         name="Старое содержимое:",
@@ -164,6 +176,9 @@ class Logs(commands.Cog):
                     embed = disnake.Embed(
                         description=f"Никнейм {'бота' if after.bot else 'участника'} **{after}** ({after.mention}) был изменен",
                         color=self.color.MAIN,
+                        timestamp=datetime.datetime.fromtimestamp(
+                            datetime.datetime.now().timestamp()
+                        ),
                     )
                     embed.set_footer(
                         text=f"ID {'бота' if after.bot else 'участника'}: {after.id}"

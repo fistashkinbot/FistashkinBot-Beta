@@ -26,7 +26,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
-    @commands.default_member_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
+    # @commands.default_member_permissions(moderate_members=True)
     async def timeout(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -117,8 +118,10 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
         dm_permission=False,
     )
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(moderate_members=True)
-    @commands.default_member_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
+    # @commands.default_member_permissions(moderate_members=True)
     async def untimeout(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -170,7 +173,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(kick_members=True)
-    @commands.default_member_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    # @commands.default_member_permissions(kick_members=True)
     async def kick(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -225,7 +229,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
-    @commands.default_member_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    # @commands.default_member_permissions(ban_members=True)
     async def ban(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -282,7 +287,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
-    @commands.default_member_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    # @commands.default_member_permissions(ban_members=True)
     async def unban(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -310,7 +316,7 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
                 inter, text="выдавать разблокировку"
             )
 
-        elif member.bot:
+        elif user.bot:
             return await self.checks.check_unknown(
                 inter, text=f"Ты не можешь взаимодействовать с ботами!"
             )
@@ -349,7 +355,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
-    @commands.default_member_permissions(manage_channels=True)
+    @commands.bot_has_permissions(manage_channels=True)
+    # @commands.default_member_permissions(manage_channels=True)
     async def setdelay(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -404,7 +411,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
-    @commands.default_member_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_messages=True)
+    # @commands.default_member_permissions(manage_messages=True)
     async def clear(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -435,7 +443,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
-    @commands.default_member_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    # @commands.default_member_permissions(ban_members=True)
     async def give_warn(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -566,7 +575,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
-    @commands.default_member_permissions(ban_members=True)
+    @commands.bot_has_permissions(ban_members=True)
+    # @commands.default_member_permissions(ban_members=True)
     async def remove_member_warns(
         self,
         inter: disnake.ApplicationCommandInteraction,

@@ -10,6 +10,7 @@ from disnake.enums import ButtonStyle
 from utils import main, enums, constant
 from core import config
 from loguru import logger
+from utils import checks
 
 
 class CustomPlayer(wavelink.Player):
@@ -151,12 +152,13 @@ class ControlPanel(disnake.ui.View):
                 )
 
 
-class Music(commands.Cog, name="🎵 Музыка [Beta]"):
+class Music(commands.Cog, name="🎵 Музыка [WIP]"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.song_queue = {}
         self.config = config.Config()
         self.color = enums.Color()
+        self.checks = checks.Checks(self.bot)
         bot.loop.create_task(self.connect_nodes())
 
     async def connect_nodes(self):
@@ -203,7 +205,8 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
             ),
         ),
     ):
-        url_type = self.check_string(search)
+        return await self.checks.check_is_wip(inter)
+        """url_type = self.check_string(search)
         action = self.url_type_mapping.get(url_type, None)
         vc = inter.guild.voice_client
         if not vc:
@@ -220,7 +223,7 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
                     description="Не знаю, эта ссылка неверная. Попробуйте еще раз!",
                     color=self.color.DARK_GRAY,
                 )
-            )
+            )"""
 
     @commands.slash_command(
         name=disnake.Localized("music_panel", key="MUSIC_PANEL_COMMAND_NAME"),
@@ -231,7 +234,8 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
         dm_permission=False,
     )
     async def nowplaying(self, inter):
-        vc = inter.guild.voice_client
+        return await self.checks.check_is_wip(inter)
+        """vc = inter.guild.voice_client
         if vc:
             await inter.response.defer(ephemeral=False)
             embed = disnake.Embed(
@@ -253,7 +257,7 @@ class Music(commands.Cog, name="🎵 Музыка [Beta]"):
                     description=f"❌| Сейчас ничего не играет!",
                     color=self.color.DARK_GRAY,
                 )
-            )
+            )"""
 
     async def play_spotify_track(self, inter, track: str, vc: CustomPlayer):
         track = await spotify.SpotifyTrack.search(query=track, return_first=True)

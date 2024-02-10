@@ -22,30 +22,30 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         self.checks = checks.Checks(self.bot)
 
     NSFW_DESCRIPTIONS = {
-        "Задницы (ass)": "ass",
-        "БДСМ (bdsm)": "bdsm",
-        "Кам) (cum)": "cum",
-        "Девушки-доминаторы (femdom)": "femdom",
-        "Хентай (hentai)": "hentai",
-        "Инцест (incest)": "incest",
-        "Мастурбация (masturbation)": "masturbation",
-        "Эротика (ero)": "ero",
-        "Оргия (orgy)": "orgy",
-        "Юри (yuri)": "yuri",
-        "Трусики (pantsu)": "pantsu",
-        "Очко (очки) (glasses)": "glasses",
-        "Работа ручками (handjob)": "handjob",
-        "Блоуджоб (blowjob)": "blowjob",
-        "Работа грудью (boobjob)": "boobjob",
-        "Просто грудь (boobs)": "boobs",
-        "Ножки (footjob)": "footjob",
-        "Ещё больше хентая (hentai gifs)": "gif",
-        "Ахегао (ahegao)": "ahegao",
-        "Школьницы и не только... (uniform)": "uniform",
-        "Щупальца (tentacles)": "tentacles",
-        "Бёдра (thighs)": "thighs",
-        "Кошко-девочки (nsfw neko)": "nsfwNeko",
-        "Юбочки (zettai ryouiki)": "zettaiRyouiki",
+        "Задницы": "ass",
+        "БДСМ": "bdsm",
+        "Кам)": "cum",
+        "Девушки-доминаторы": "femdom",
+        "Хентай": "hentai",
+        "Инцест": "incest",
+        "Мастурбация": "masturbation",
+        "Эротика": "ero",
+        "Оргия": "orgy",
+        "Юри": "yuri",
+        "Трусики": "pantsu",
+        "Очко (очки)": "glasses",
+        "Работа ручками": "handjob",
+        "Блоуджоб": "blowjob",
+        "Работа грудью": "boobjob",
+        "Просто грудь": "boobs",
+        "Ножки": "footjob",
+        "Ещё больше хентая": "gif",
+        "Ахегао": "ahegao",
+        "Школьницы и не только...": "uniform",
+        "Щупальца": "tentacles",
+        "Бёдра": "thighs",
+        "Кошко-девочки": "nsfwNeko",
+        "Юбочки": "zettaiRyouiki",
     }
 
     ANIME_GIRLS = {
@@ -54,6 +54,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         "Ававо": "awoo",
         "Неко": "neko",
         "Поке": "poke",
+        "Рандом вайфу": "waifu",
     }
 
     RP_DESCRIPTIONS = {
@@ -101,7 +102,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
             "Answers a users question.", key="EIGHT_BALL_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def ball(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -130,7 +131,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def rp(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -172,7 +173,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def cat(self, inter: disnake.ApplicationCommandInteraction):
         req = requests.get("https://api.thecatapi.com/v1/images/search")
         if req.status_code != 200:
@@ -193,7 +194,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def dog(self, inter: disnake.ApplicationCommandInteraction):
         req = requests.get("http://random.dog/")
         if req.status_code != 200:
@@ -214,7 +215,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         ),
     )
     @commands.is_nsfw()
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def nsfw(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -247,7 +248,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
             "Anime-chan!", key="ANIME_CHAN_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def anime_girl(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -273,7 +274,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
             "Play minesweeper mini-game.", key="MINESWEEPER_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def mine(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         board = [["\u200b"] * 5] * 5
@@ -311,7 +312,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def roll_dice(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         dice_roll = random.randint(1, 6)

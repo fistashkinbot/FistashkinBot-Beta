@@ -37,7 +37,7 @@ class Slash_Help(commands.Cog):
             "Shows a list of available bot commands.", key="HELP_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def help(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         debug = [

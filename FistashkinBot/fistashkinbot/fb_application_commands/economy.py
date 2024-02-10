@@ -27,7 +27,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def user_balance(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -76,7 +76,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def user_rank(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -145,7 +145,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def pay_cash(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -235,7 +235,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def leadersboard(self, inter: disnake.ApplicationCommandInteraction):
         pass
 
@@ -246,7 +246,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             key="LEADERBOARD_BALANCE_COMMAND_DESCRIPTION",
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def server_leadersboard_balance(
         self, inter: disnake.ApplicationCommandInteraction
     ):
@@ -312,7 +312,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             key="LEADERBOARD_RANK_COMMAND_DESCRIPTION",
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def server_leadersboard_level(
         self, inter: disnake.ApplicationCommandInteraction
     ):
@@ -380,7 +380,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def view_shop(self, inter):
         await inter.response.defer(ephemeral=False)
 
@@ -507,7 +507,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def slot(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -662,7 +662,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def coin_game(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -770,7 +770,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def open_case(self, inter: disnake.ApplicationCommandInteraction):
         data = await self.db.get_data(inter.author)
         if 500 > data["balance"]:
@@ -811,9 +811,11 @@ class CoinButtons(disnake.ui.View):
         for child in self.children:
             child.disabled = True
         await self.message.edit(view=None)
+        self.stop()
 
     @disnake.ui.button(label="Орёл", emoji="🪙", style=disnake.ButtonStyle.primary)
     async def orel_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         data = await self.db.get_data(inter.author)
         await self.db.update_member(
             "UPDATE users SET balance = balance - ? WHERE member_id = ? AND guild_id = ?",
@@ -859,6 +861,7 @@ class CoinButtons(disnake.ui.View):
 
     @disnake.ui.button(label="Решка", emoji="🪙", style=disnake.ButtonStyle.primary)
     async def reshka_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         data = await self.db.get_data(inter.author)
         await self.db.update_member(
             "UPDATE users SET balance = balance - ? WHERE member_id = ? AND guild_id = ?",
@@ -916,6 +919,7 @@ class FightButton(disnake.ui.View):
         for child in self.children:
             child.disabled = True
         await self.message.edit(view=None)
+        self.stop()
 
     @disnake.ui.button(
         label="Удар в ноги",
@@ -924,6 +928,7 @@ class FightButton(disnake.ui.View):
         style=disnake.ButtonStyle.primary,
     )
     async def legs_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         return await self.economy.hit(
             inter, "удар в ноги", amount=int(inter.message.embeds[0].fields[0].value)
         )
@@ -935,6 +940,7 @@ class FightButton(disnake.ui.View):
         style=disnake.ButtonStyle.primary,
     )
     async def torso_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         return await self.economy.hit(
             inter, "удар в живот", amount=int(inter.message.embeds[0].fields[0].value)
         )
@@ -946,6 +952,7 @@ class FightButton(disnake.ui.View):
         style=disnake.ButtonStyle.primary,
     )
     async def head_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         return await self.economy.hit(
             inter, "удар в голову", amount=int(inter.message.embeds[0].fields[0].value)
         )
@@ -966,6 +973,7 @@ class CaseButtons(disnake.ui.View):
         for child in self.children:
             child.disabled = True
         await self.message.edit(view=None)
+        self.stop()
 
     @disnake.ui.button(
         label=f"Открыть кейс (500 FC)",
@@ -974,6 +982,7 @@ class CaseButtons(disnake.ui.View):
         style=disnake.ButtonStyle.success,
     )
     async def open_case_button_callback(self, button: disnake.ui.Button, inter):
+        self.stop()
         await inter.response.defer(ephemeral=True)
         data = await self.db.get_data(inter.author)
         rnd_int = random.randint(100, 1500)

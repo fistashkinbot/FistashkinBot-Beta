@@ -19,7 +19,7 @@ class ContextMenu(commands.Cog):
         name=disnake.Localized("Avatar", key="CONTEXT_MENU_COMMAND_AVATAR"),
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def avatar(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -36,6 +36,7 @@ class ContextMenu(commands.Cog):
             f" | [**[GIF]**]({member.display_avatar.replace(format='gif', size=4096).url})"
             if member.display_avatar.is_animated()
             else "",
+            f"\n[**[Стандартный аватар]**]({member.default_avatar.url})",
         ]
         description_format = "".join(formats)
         embed = disnake.Embed(
@@ -52,7 +53,7 @@ class ContextMenu(commands.Cog):
         name=disnake.Localized("UserInfo", key="CONTEXT_MENU_COMMAND_USERINFO"),
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def userinfo(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -117,11 +118,6 @@ class ContextMenu(commands.Cog):
                         else:
                             description.append(f"**Слушает:** {activity.name}")
 
-        if member.top_role == member.guild.default_role or member.bot:
-            color = self.color.DARK_GRAY
-        else:
-            color = member.top_role.color
-
         if (
             member.bot
             or member != inter.author
@@ -132,7 +128,9 @@ class ContextMenu(commands.Cog):
 
         embed = disnake.Embed(
             description=bio,
-            color=color,
+            color=self.color.DARK_GRAY
+            if member.top_role == member.guild.default_role or member.bot
+            else member.top_role.color,
             timestamp=inter.created_at,
         )
 

@@ -41,7 +41,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             "See the most frequently asked questions.", key="FAQ_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def faq(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -81,7 +81,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def userinfo(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -207,7 +207,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def serverinfo(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer()
         embed = disnake.Embed(
@@ -341,7 +341,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def avatar(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -364,6 +364,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             f" | [**[GIF]**]({member.display_avatar.replace(format='gif', size=4096).url})"
             if member.display_avatar.is_animated()
             else "",
+            f"\n[**[Стандартный аватар]**]({member.default_avatar.url})",
         ]
         description_format = "".join(formats)
         embed = disnake.Embed(
@@ -384,7 +385,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def roles(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         all_roles = []
@@ -429,7 +430,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             key="BOT_INFO_COMMAND_DESCRIPTION",
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def botinfo(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         developer = await self.bot.fetch_user(self.main.DEVELOPER_ID)
@@ -468,7 +469,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             "Shows bot statistics.", key="BOT_STATS_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def stats(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
 
@@ -487,7 +488,9 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             int(total_connections)
         )
 
-        uptimebot = disnake.utils.format_dt(os.path.getatime("./main.py"), style="R")
+        uptimebot = disnake.utils.format_dt(
+            round(self.bot.uptime.timestamp()), style="R"
+        )  # disnake.utils.format_dt(os.path.getatime("./main.py"), style="R")
         command_counter = await self.db.get_command_count()
         formatted_command_counter_result = self.enum.format_large_number(
             command_counter
@@ -531,7 +534,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             "Testing bot functionality and delays.", key="BOT_PING_COMMAND_DESCRIPTION"
         ),
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def ping(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=False)
         embed = disnake.Embed(
@@ -549,6 +552,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def role_info(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -561,10 +565,9 @@ class General(commands.Cog, name="🛠️ Утилиты"):
     ):
         await inter.response.defer(ephemeral=False)
         role_info_array = [
-            f"Цвет роли: **{hex(role.color.value)}**",
+            f"Цвет роли: **{hex(role.color.value)} ({'#{0:06x}'.format(role.color.value)})**",
             f"Интеграция: **{'Да' if role.is_integration() else 'Нет'}**",
-            f"Участников на этой роли: **{len(role.members)}**",
-            f"ID роли: **{role.id}**",
+            f"Участников с этой роли: **{len(role.members)}**",
             f"Упоминание роли: {role.mention}",
             f"Позиция: **{role.position}**",
             f"Роль создана: <t:{round(role.created_at.timestamp())}:D>",
@@ -574,6 +577,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             name=f"Информация о роли {role.name}",
             icon_url=inter.guild.icon.url if inter.guild.icon else None,
         )
+        embed.set_footer(text=f"ID роли: {role.id}")
 
         if role.icon:
             embed.set_thumbnail(url=role.icon.url)
@@ -588,7 +592,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def clist(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -628,13 +632,36 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         view.message = message
 
     @commands.slash_command(
+        name=disnake.Localized("emoji-random", key="EMOJI_RANDOM_COMMAND_NAME"),
+        description=disnake.Localized(
+            "Finds a random emoji.", key="EMOJI_RANDOM_COMMAND_DESCRIPTION"
+        ),
+        dm_permission=False,
+    )
+    @commands.is_nsfw()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def random_emoji(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.defer(ephemeral=False)
+        emoji = random.choice(inter.bot.emojis)
+        embed = disnake.Embed(
+            description=f"[**Скачать эмодзик**]({emoji.url})", color=self.color.MAIN
+        )
+        embed.set_author(
+            name=f"Эмодзи с {emoji.guild.name}",
+            icon_url=emoji.guild.icon.url if emoji.guild.icon else None,
+        )
+        embed.set_footer(text=f"ID: {emoji.id}")
+        embed.set_image(url=emoji.url)
+        await inter.edit_original_message(embed=embed)
+
+    @commands.slash_command(
         name=disnake.Localized("bio", key="USER_BIO_COMMAND_NAME"),
         description=disnake.Localized(
             "Changes the biography of the user.", key="USER_BIO_COMMAND_DESCRIPTION"
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def bio(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -668,7 +695,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def github(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -748,7 +775,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         ),
         dm_permission=False,
     )
-    @commands.cooldown(1, 15, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.default_member_permissions(administrator=True)
     async def settings(self, inter: disnake.ApplicationCommandInteraction):

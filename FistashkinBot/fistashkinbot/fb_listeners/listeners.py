@@ -158,7 +158,7 @@ class Listeners(commands.Cog):
             description=f"Теперь у меня **{len(self.bot.guilds)}** серверов",
             color=self.color.MAIN,
         )
-        add_embed.add_field(name=Участников, value=len(guild.members))
+        add_embed.add_field(name="Участников", value=len(guild.members))
         add_embed.add_field(
             name=Ботов, value=len([i.id for i in guild.members if i.bot])
         )
@@ -180,7 +180,7 @@ class Listeners(commands.Cog):
             description=f"Теперь у меня **{len(self.bot.guilds)}** серверов",
             color=self.color.MAIN,
         )
-        add_embed.add_field(name=Участников, value=len(guild.members))
+        add_embed.add_field(name="Участников", value=len(guild.members))
         add_embed.add_field(
             name=Ботов, value=len([i.id for i in guild.members if i.bot])
         )

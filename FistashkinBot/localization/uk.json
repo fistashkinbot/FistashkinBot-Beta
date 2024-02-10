@@ -46,6 +46,9 @@
 	"ROLEINFO_COMMAND_NAME": "рольінфо",
     "ROLEINFO_COMMAND_DESCRIPTION": "Відображає інформацію про будь-яку роль на сервері.",
 
+	"EMOJI_RANDOM_COMMAND_NAME": "емодзі",
+	"EMOJI_RANDOM_COMMAND_DESCRIPTION": "Знаходить рандомний емодзі.",
+
 	"USER_BIO_COMMAND_NAME": "просебе",
 	"USER_BIO_COMMAND_DESCRIPTION": "Змінює біографію учасника.",
 	"USER_BIO_TEXT_NAME": "біо",

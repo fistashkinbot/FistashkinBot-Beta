@@ -17,6 +17,7 @@ class TempVoiceButtons(disnake.ui.View):
             if isinstance(child, disnake.ui.Button):
                 child.disabled = True
         await self.message.edit(view=self)
+        self.stop()
 
     @disnake.ui.button(label="Добавить триггер", style=disnake.ButtonStyle.green)
     async def add_trigger(self, button: disnake.ui.Button, inter):
@@ -46,6 +47,7 @@ class RoleShopButtons(disnake.ui.View):
             if isinstance(child, disnake.ui.Button):
                 child.disabled = True
         await self.message.edit(view=self)
+        self.stop()
 
     @disnake.ui.button(label="Добавить роли", style=disnake.ButtonStyle.green)
     async def add_role(self, button: disnake.ui.Button, inter):
@@ -71,6 +73,7 @@ class LogsSetupButtons(disnake.ui.View):
             if isinstance(child, disnake.ui.Button):
                 child.disabled = True
         await self.message.edit(view=self)
+        self.stop()
 
     @disnake.ui.button(label="Установить", style=disnake.ButtonStyle.green)
     async def add_role(self, button: disnake.ui.Button, inter):

@@ -15,10 +15,6 @@ if __name__ == "__main__":
     bot.i18n.load("./localization")
     bot.load_extensions()
 
-    @bot.event
-    async def on_ready():
-        logger.info(f"\n - Бот успешно подключен - \n")
-
     try:
         bot.run(Config.TOKEN)
     except HTTPException:

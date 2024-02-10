@@ -98,6 +98,7 @@ class MineswiperView(ui.View):
         await self.message.edit(
             content="Кнопки отключены, так как вы бездействовали!", view=self
         )
+        self.stop()
 
     async def EndGame(self):
         await self.inter.edit_original_message(content=f"🥳 Игра окончена. Ты победил!")
@@ -108,6 +109,7 @@ class MineswiperView(ui.View):
                 button.label = "💣"
                 button.style = ButtonStyle.red
                 self.board[self.GetBoardRow(pos)][self.GetBoardPos(pos)] = "💣"
+        self.stop()
 
     @staticmethod
     def GetBoardRow(pos):
@@ -166,3 +168,4 @@ class MineswiperView(ui.View):
         await self.inter.edit_original_message(
             content=f"😒 Игра окончена. Ты проиграл!", view=self
         )
+        self.stop()

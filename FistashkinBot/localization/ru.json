@@ -8,6 +8,9 @@
 	"TARGET_ROLE_NAME": "роль",
 	"TARGET_ROLE_DESCRIPTION": "Выберите роль.",
 
+	"TARGET_CHANNEL_NAME": "канал",
+	"TARGET_CHANNEL_DESCRIPTION": "Выберите канал.",
+
 	"TARGET_REASON_NAME": "причина",
 	"TARGET_REASON_DESCRIPTION": "Укажите причину.",
 
@@ -45,6 +48,9 @@
 
 	"ROLEINFO_COMMAND_NAME": "рольинфо",
     "ROLEINFO_COMMAND_DESCRIPTION": "Отображает информацию о любой роли на сервере.",
+
+	"EMOJI_RANDOM_COMMAND_NAME": "эмодзи",
+	"EMOJI_RANDOM_COMMAND_DESCRIPTION": "Находит рандомный эмодзи.",
 
 	"USER_BIO_COMMAND_NAME": "осебе",
 	"USER_BIO_COMMAND_DESCRIPTION": "Изменяет биографию участника.",

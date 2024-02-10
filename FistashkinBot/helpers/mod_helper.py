@@ -102,17 +102,21 @@ class ModerationHelper:
 
         await member.timeout(until=dynamic_durations, reason=reason)
         if send_to_member:
-            await member.send(
-                embed=dm_embed,
-                components=[
-                    disnake.ui.Button(
-                        label=f"Отправлено с {inter.guild.name}",
-                        emoji="📨",
-                        style=disnake.ButtonStyle.gray,
-                        disabled=True,
-                    )
-                ],
-            )
+            try:
+                await member.send(
+                    embed=dm_embed,
+                    components=[
+                        disnake.ui.Button(
+                            label=f"Отправлено с {inter.guild.name}",
+                            emoji="📨",
+                            style=disnake.ButtonStyle.gray,
+                            disabled=True,
+                        )
+                    ],
+                )
+            except disnake.Forbidden:
+                pass
+
         await inter.edit_original_message(embed=embed)
 
     async def send_embed_punishment(
@@ -177,20 +181,21 @@ class ModerationHelper:
                 )
                 await channel.send(embed=log_embed)
 
-        if send_to_member == True:
-            await member.send(
-                embed=dm_embed,
-                components=[
-                    disnake.ui.Button(
-                        label=f"Отправлено с {inter.guild.name}",
-                        emoji="📨",
-                        style=disnake.ButtonStyle.gray,
-                        disabled=True,
-                    )
-                ],
-            )
-        else:
-            pass
+        if send_to_member:
+            try:
+                await member.send(
+                    embed=dm_embed,
+                    components=[
+                        disnake.ui.Button(
+                            label=f"Отправлено с {inter.guild.name}",
+                            emoji="📨",
+                            style=disnake.ButtonStyle.gray,
+                            disabled=True,
+                        )
+                    ],
+                )
+            except disnake.Forbidden:
+                pass
 
         if punish == f"✅ Участник {member.mention} был забанен.":
             await inter.guild.ban(user=member, reason=reason)

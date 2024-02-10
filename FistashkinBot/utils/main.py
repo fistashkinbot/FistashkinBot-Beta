@@ -11,7 +11,7 @@ from utils import database, main, constant, checks
 class MainSettings:
     DEVELOPER_ID = 668453200457760786
     BOT_ID = 991338113630752928
-    BOT_VERSION = "v1.7.1660 (<t:1705922655:d>)"
+    BOT_VERSION = "v1.7.1710 (<t:1707573002:d>)"
     BOT_EMOJI = "<:fistashkinbot:1145318360196845649>"
 
     GITHUB_AUTHOR = "https://github.com/riverya4life"

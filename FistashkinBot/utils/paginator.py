@@ -35,6 +35,7 @@ class Paginator(disnake.ui.View):
             if isinstance(child, disnake.ui.Button):
                 child.disabled = True
         await self.message.edit(view=self)
+        self.stop()
 
     def _update_state(self) -> None:
         self.first_page.disabled = self.prev_page.disabled = self.index == 0
@@ -83,3 +84,4 @@ class Paginator(disnake.ui.View):
         self, button: disnake.ui.Button, inter: disnake.MessageInteraction
     ):
         await inter.response.edit_message(view=None)
+        self.stop()

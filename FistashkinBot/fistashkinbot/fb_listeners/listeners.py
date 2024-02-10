@@ -160,7 +160,7 @@ class Listeners(commands.Cog):
         )
         add_embed.add_field(name="Участников", value=len(guild.members))
         add_embed.add_field(
-            name=Ботов, value=len([i.id for i in guild.members if i.bot])
+            name="Ботов", value=len([i.id for i in guild.members if i.bot])
         )
         add_embed.set_thumbnail(
             url=guild.icon.url if guild.icon else guild.owner.display_avatar.url
@@ -182,7 +182,7 @@ class Listeners(commands.Cog):
         )
         add_embed.add_field(name="Участников", value=len(guild.members))
         add_embed.add_field(
-            name=Ботов, value=len([i.id for i in guild.members if i.bot])
+            name="Ботов", value=len([i.id for i in guild.members if i.bot])
         )
         add_embed.set_thumbnail(
             url=guild.icon.url if guild.icon else guild.owner.display_avatar.url

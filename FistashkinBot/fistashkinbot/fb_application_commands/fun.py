@@ -1,7 +1,5 @@
 import disnake
 import random
-import json
-import requests
 import aiohttp
 
 from disnake.ext import commands
@@ -175,17 +173,21 @@ class Fun(commands.Cog, name="😄 Развлечение"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def cat(self, inter: disnake.ApplicationCommandInteraction):
-        req = requests.get("https://api.thecatapi.com/v1/images/search")
-        if req.status_code != 200:
-            return await self.checks.check_unknown(inter, text=f"Ошибка API!")
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.thecatapi.com/v1/images/search"
+            ) as resp:
+                if resp.status != 200:
+                    return await self.checks.check_unknown(inter, text=f"Ошибка API!")
 
-        await inter.response.defer(ephemeral=False)
+                await inter.response.defer(ephemeral=False)
 
-        catlink = json.loads(req.text)[0]
-        rngcat = catlink["url"]
-        embed = disnake.Embed(color=self.color.DARK_GRAY)
-        embed.set_image(url=rngcat)
-        await inter.edit_original_message(embed=embed)
+                data = await resp.json()
+                catlink = data[0]
+                rngcat = catlink["url"]
+                embed = disnake.Embed(color=self.color.DARK_GRAY)
+                embed.set_image(url=rngcat)
+                await inter.edit_original_message(embed=embed)
 
     @commands.slash_command(
         name=disnake.Localized("dog", key="DOG_COMMAND_NAME"),
@@ -196,17 +198,18 @@ class Fun(commands.Cog, name="😄 Развлечение"):
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def dog(self, inter: disnake.ApplicationCommandInteraction):
-        req = requests.get("http://random.dog/")
-        if req.status_code != 200:
-            return await self.checks.check_unknown(inter, text=f"Ошибка API!")
+        async with aiohttp.ClientSession() as session:
+            async with session.get("http://random.dog/") as resp:
+                if resp.status != 200:
+                    return await self.checks.check_unknown(inter, text=f"Ошибка API!")
 
-        await inter.response.defer(ephemeral=False)
+                await inter.response.defer(ephemeral=False)
 
-        doglink = BeautifulSoup(req.text, "html.parser")
-        rngdog = "http://random.dog/" + doglink.img["src"]
-        embed = disnake.Embed(color=self.color.DARK_GRAY)
-        embed.set_image(url=rngdog)
-        await inter.edit_original_message(embed=embed)
+                doglink = BeautifulSoup(await resp.text(), "html.parser")
+                rngdog = "http://random.dog/" + doglink.img["src"]
+                embed = disnake.Embed(color=self.color.DARK_GRAY)
+                embed.set_image(url=rngdog)
+                await inter.edit_original_message(embed=embed)
 
     @commands.slash_command(
         name=disnake.Localized("nsfw", key="NSFW_COMMAND_NAME"),

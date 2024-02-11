@@ -3,8 +3,7 @@ import random
 import datetime
 import os
 import platform
-import json
-import requests
+import aiohttp
 
 from disnake.ext import commands
 from bs4 import BeautifulSoup
@@ -707,66 +706,77 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             ),
         ),
     ):
-        req = requests.get(f"https://api.github.com/repos/{arg}")
-        apijson = json.loads(req.text)
-        if req.status_code == 200:
-            await inter.response.defer(ephemeral=False)
-            embed = disnake.Embed(color=self.color.DARK_GRAY)
-            embed.set_author(
-                name=apijson["owner"]["login"],
-                icon_url=apijson["owner"]["avatar_url"],
-                url=apijson["owner"]["html_url"],
-            )
-            embed.set_thumbnail(url=apijson["owner"]["avatar_url"])
-            embed.add_field(
-                name="Репозиторий:",
-                value=f"[{apijson['name']}]({apijson['html_url']})",
-                inline=True,
-            )
-            embed.add_field(name="Язык:", value=apijson["language"], inline=True)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.github.com/repos/{arg}") as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    await inter.response.defer(ephemeral=False)
+                    embed = disnake.Embed(color=self.color.DARK_GRAY)
+                    embed.set_author(
+                        name=data["owner"]["login"],
+                        icon_url=data["owner"]["avatar_url"],
+                        url=data["owner"]["html_url"],
+                    )
+                    embed.set_thumbnail(url=data["owner"]["avatar_url"])
+                    embed.add_field(
+                        name="Репозиторий:",
+                        value=f"[{data['name']}]({data['html_url']})",
+                        inline=True,
+                    )
+                    embed.add_field(name="Язык:", value=data["language"], inline=True)
 
-            try:
-                license_url = f"[{apijson['license']['spdx_id']}]({json.loads(requests.get(apijson['license']['url']).text)['html_url']})"
-            except:
-                license_url = "None"
-            embed.add_field(name="Лицензия:", value=license_url, inline=True)
-            if apijson["stargazers_count"] != 0:
-                embed.add_field(
-                    name="Звёзд:", value=apijson["stargazers_count"], inline=True
-                )
-            if apijson["forks_count"] != 0:
-                embed.add_field(
-                    name="Форков:", value=apijson["forks_count"], inline=True
-                )
-            if apijson["open_issues"] != 0:
-                embed.add_field(
-                    name="Проблем:", value=apijson["open_issues"], inline=True
-                )
-            embed.add_field(
-                name="Описание:", value=apijson["description"], inline=False
-            )
+                    license_url = "None"
+                    if (
+                        "license" in data
+                        and data["license"]
+                        and "url" in data["license"]
+                    ):
+                        async with session.get(data["license"]["url"]) as license_resp:
+                            if license_resp.status == 200:
+                                license_data = await license_resp.json()
+                                license_url = f"[{license_data.get('spdx_id', 'Unknown')}]({license_data.get('html_url', '')})"
 
-            for meta in BeautifulSoup(
-                requests.get(apijson["html_url"]).text, features="html.parser"
-            ).find_all("meta"):
-                try:
-                    if meta.attrs["property"] == "og:image":
-                        embed.set_image(url=meta.attrs["content"])
-                        break
-                except:
-                    pass
+                    embed.add_field(name="Лицензия:", value=license_url, inline=True)
+                    if data["stargazers_count"] != 0:
+                        embed.add_field(
+                            name="Звёзд:", value=data["stargazers_count"], inline=True
+                        )
+                    if data["forks_count"] != 0:
+                        embed.add_field(
+                            name="Форков:", value=data["forks_count"], inline=True
+                        )
+                    if data["open_issues"] != 0:
+                        embed.add_field(
+                            name="Проблем:", value=data["open_issues"], inline=True
+                        )
+                    embed.add_field(
+                        name="Описание:", value=data["description"], inline=False
+                    )
 
-            await inter.edit_original_message(embed=embed)
-        elif req.status_code == 404:
-            return await self.checks.check_unknown(
-                inter, text=f"Репозиторий не найден!"
-            )
-        elif req.status_code == 503:
-            return await self.checks.check_unknown(inter, text=f"Гитхаб упал!")
-        else:
-            return await self.checks.check_unknown(
-                inter, text=f"Неизвестная ошибка при получении информации репозитория!"
-            )
+                    async with session.get(data["html_url"]) as html_resp:
+                        html_text = await html_resp.text()
+                        for meta in BeautifulSoup(
+                            html_text, features="html.parser"
+                        ).find_all("meta"):
+                            try:
+                                if meta.attrs["property"] == "og:image":
+                                    embed.set_image(url=meta.attrs["content"])
+                                    break
+                            except:
+                                pass
+
+                    await inter.edit_original_message(embed=embed)
+                elif resp.status == 404:
+                    return await self.checks.check_unknown(
+                        inter, text=f"Репозиторий не найден!"
+                    )
+                elif resp.status == 503:
+                    return await self.checks.check_unknown(inter, text=f"Гитхаб упал!")
+                else:
+                    return await self.checks.check_unknown(
+                        inter,
+                        text=f"Неизвестная ошибка при получении информации репозитория!",
+                    )
 
     @commands.slash_command(
         name=disnake.Localized("settings", key="SETTING_COMMAND_NAME"),

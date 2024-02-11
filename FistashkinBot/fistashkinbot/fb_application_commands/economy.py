@@ -4,7 +4,6 @@ import datetime
 
 from disnake.ext import commands
 from utils import database, main, enums, constant, paginator, discord_card, checks
-from PIL import ImageColor
 
 
 class Economy(commands.Cog, name="🍪 Экономика"):
@@ -98,34 +97,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
 
         else:
             await inter.response.defer(ephemeral=False)
-            """user = await self.bot.fetch_user(member.id)
-            data = await self.db.get_data(member)
 
-            if member.top_role == member.guild.default_role:
-                hex_color = "#A53143"
-            else:
-                hex_color = ImageColor.getcolor(str(member.top_role.color), "RGB")
-                hex_color = "#{0:02x}{1:02x}{2:02x}".format(*hex_color)
-
-            card_settings = Settings(
-                background="https://e0.pxfuel.com/wallpapers/793/114/desktop-wallpaper-haikyuu-kozume-kenma-kageyama-tobio-azumane-asahi-nishinoya-yuu.jpg",
-                background_color="#000000",
-                text_color="white",
-                bar_color="#e39e7e",
-            )
-            rank = RankCard(
-                settings=card_settings,
-                avatar=user.display_avatar.url,
-                status=member.status,
-                level=data["level"],
-                current_exp=data["xp"],
-                max_exp=5 * (data["level"] ** 2) + 50 * data["level"] + 100,
-                username=f"@{user.name}",
-            )
-            image = await rank.card()
-            await inter.edit_original_message(
-                file=image
-            )"""
             levelcard = discord_card.LevelCard()
             data = await self.db.get_data(member)
             levelcard.avatar = member.display_avatar.url

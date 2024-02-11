@@ -4,11 +4,8 @@ aiosqlite
 environs
 disnake
 disnake-jishaku
-dnspython
-easy-pil
+easy_pil
 bs4
-PyNaCl
-python-dotenv
 humanize
 psutil
 loguru

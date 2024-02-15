@@ -26,8 +26,8 @@
 * **Сайт:** [**Кликабельно**](https://fistashkinbot.github.io/)
 * **Наш официальный сервер Discord:** [**Кликабельно**](https://discord.gg/H9XCZSReMj)
 * **Бот на мониторингах:** [**BotiCord**](https://boticord.top/bot/991338113630752928) | [**Top.gg**](https://top.gg/bot/991338113630752928) | [**SD.C**](https://bots.server-discord.com/991338113630752928)
-* **Условия использования:** [**Кликабельно**](TERMS.md)
-* **Конфиденциальность:** [**Кликабельно**](PRIVACY.md)
+* **Условия использования:** [**Кликабельно**](https://fistashkindev.gitbook.io/fistashkinbot-docs/first-steps/terms-of-use)
+* **Конфиденциальность:** [**Кликабельно**](https://fistashkindev.gitbook.io/fistashkinbot-docs/first-steps/privacy)
 
 
 ### Лицензия

@@ -54,6 +54,9 @@
 	"USER_BIO_TEXT_NAME": "біо",
 	"USER_BIO_TEXT_DESCRIPTION": "Ви можете вказати свій текст, щоб очистити, напишіть 'очистити'.",
 
+	"MONITORING_COMMAND_NAME": "моніторинг",
+	"MONITORING_COMMAND_DESCRIPTION": "Відображає моніторинги, на яких присутній бот.",
+
 	"GITHUB_COMMAND_NAME": "гітхаб",
 	"GITHUB_COMMAND_DESCRIPTION": "Інформація про репозиторій Github.",
 	"GITHUB_ARG_NAME": "репозиторій",
@@ -126,11 +129,10 @@
 	"ANIME_CHAN_CHOICE_NAME": "вибір",
 	"ANIME_CHAN_CHOICE_DESCRIPTION": "Виберіть тег з аніме-тян.",
 
-	"CAT_COMMAND_NAME": "кіт",
-	"CAT_COMMAND_DESCRIPTION": "Показати випадкове зображення з котом.",
-
-	"DOG_COMMAND_NAME": "собака",
-	"DOG_COMMAND_DESCRIPTION": "Показати випадкове зображення з собакою.",
+	"ANIMAL_COMMAND_NAME": "тварини",
+	"ANIMAL_COMMAND_DESCRIPTION": "Виводить випадкове фото обраної тварини.",
+	"ANIMAL_CHOICE_NAME": "вибір",
+	"ANIMAL_CHOICE_DESCRIPTION": "Виберіть тварину.",
 
 	"NSFW_COMMAND_NAME": "нсфв",
 	"NSFW_COMMAND_DESCRIPTION": "Ну... Це було непогано.",

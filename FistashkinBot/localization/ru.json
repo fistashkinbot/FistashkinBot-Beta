@@ -55,6 +55,9 @@
 	"USER_BIO_COMMAND_NAME": "осебе",
 	"USER_BIO_COMMAND_DESCRIPTION": "Изменяет биографию участника.",
 
+	"MONITORING_COMMAND_NAME": "мониторинг",
+	"MONITORING_COMMAND_DESCRIPTION": "Отображает мониторинги, на которых есть бот.",
+
 	"GITHUB_COMMAND_NAME": "гитхаб",
 	"GITHUB_COMMAND_DESCRIPTION": "Информация о репозитории Github.",
 	"GITHUB_ARG_NAME": "репозиторий",
@@ -127,11 +130,10 @@
 	"ANIME_CHAN_CHOICE_NAME": "выбор",
 	"ANIME_CHAN_CHOICE_DESCRIPTION": "Выберите тег с аниме-тян.",
 
-	"CAT_COMMAND_NAME": "кот",
-	"CAT_COMMAND_DESCRIPTION": "Показать случайное изображение с котом.",
-
-	"DOG_COMMAND_NAME": "собака",
-	"DOG_COMMAND_DESCRIPTION": "Показать случайное изображение с собакой.",
+	"ANIMAL_COMMAND_NAME": "животные",
+	"ANIMAL_COMMAND_DESCRIPTION": "Выводит рандомную фотографию выбраного животного.",
+	"ANIMAL_CHOICE_NAME": "выбор",
+	"ANIMAL_CHOICE_DESCRIPTION": "Выберите животного.",
 
 	"NSFW_COMMAND_NAME": "нсфв",
 	"NSFW_COMMAND_DESCRIPTION": "Ну... Это было неплохо.",

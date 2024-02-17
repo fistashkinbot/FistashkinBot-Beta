@@ -3,12 +3,18 @@ import random
 import aiohttp
 
 from disnake.ext import commands
-from utils import constant, main, enums, checks
+from utils import constant, main, enums, CustomError
 from bs4 import BeautifulSoup
-from typing import Optional
+from typing import Optional, Union
 from helpers.fun_helper import MineswiperView
 from itertools import repeat
 from services import waifu_pics
+from io import BytesIO
+from googletrans import Translator
+
+
+async def translator(word, lang):
+    return Translator().translate(word, dest=lang).text
 
 
 class Fun(commands.Cog, name="😄 Развлечение"):
@@ -17,7 +23,6 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         self.main = main.MainSettings()
         self.eightball = constant.EightBall()
         self.color = enums.Color()
-        self.checks = checks.Checks(self.bot)
 
     NSFW_DESCRIPTIONS = {
         "Задницы": "ass",
@@ -165,53 +170,6 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         await inter.edit_original_message(embed=embed)
 
     @commands.slash_command(
-        name=disnake.Localized("cat", key="CAT_COMMAND_NAME"),
-        description=disnake.Localized(
-            "Show a random picture with a cat.", key="CAT_COMMAND_DESCRIPTION"
-        ),
-        dm_permission=False,
-    )
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def cat(self, inter: disnake.ApplicationCommandInteraction):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://api.thecatapi.com/v1/images/search"
-            ) as resp:
-                if resp.status != 200:
-                    return await self.checks.check_unknown(inter, text=f"Ошибка API!")
-
-                await inter.response.defer(ephemeral=False)
-
-                data = await resp.json()
-                catlink = data[0]
-                rngcat = catlink["url"]
-                embed = disnake.Embed(color=self.color.DARK_GRAY)
-                embed.set_image(url=rngcat)
-                await inter.edit_original_message(embed=embed)
-
-    @commands.slash_command(
-        name=disnake.Localized("dog", key="DOG_COMMAND_NAME"),
-        description=disnake.Localized(
-            "Show a random picture of a dog.", key="DOG_COMMAND_DESCRIPTION"
-        ),
-        dm_permission=False,
-    )
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def dog(self, inter: disnake.ApplicationCommandInteraction):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("http://random.dog/") as resp:
-                if resp.status != 200:
-                    return await self.checks.check_unknown(inter, text=f"Ошибка API!")
-
-                await inter.response.defer(ephemeral=False)
-
-                doglink = BeautifulSoup(await resp.text(), "html.parser")
-                rngdog = "http://random.dog/" + doglink.img["src"]
-                embed = disnake.Embed(color=self.color.DARK_GRAY)
-                embed.set_image(url=rngdog)
-                await inter.edit_original_message(embed=embed)
-
-    @commands.slash_command(
         name=disnake.Localized("nsfw", key="NSFW_COMMAND_NAME"),
         description=disnake.Localized(
             "Well... It was not bad.", key="NSFW_COMMAND_DESCRIPTION"
@@ -238,7 +196,7 @@ class Fun(commands.Cog, name="😄 Развлечение"):
                 ) as response:
                     data = await response.json()
         except:
-            return await self.checks.check_unknown(inter, text=f"Ошибка API!")
+            raise CustomError("❌ Ошибка API!")
 
         await inter.response.defer(ephemeral=False)
         embed = disnake.Embed(color=self.color.MAIN)
@@ -328,6 +286,52 @@ class Fun(commands.Cog, name="😄 Развлечение"):
         embed.set_thumbnail(url=inter.author.display_avatar.url)
         embed.set_footer(text="💝 Оп, оп-ля!")
         await inter.edit_original_message(embed=embed)
+
+    @commands.slash_command(
+        name=disnake.Localized("animal", key="ANIMAL_COMMAND_NAME"),
+        description=disnake.Localized(
+            "It outputs a random photo of the chosen animal.",
+            key="ANIMAL_COMMAND_DESCRIPTION",
+        ),
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def animal(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        animal: str = commands.Param(
+            name=disnake.Localized("choice", key="ANIMAL_CHOICE_NAME"),
+            description=disnake.Localized(
+                "Please choose an animal.", key="ANIMAL_CHOICE_DESCRIPTION"
+            ),
+            choices={
+                "Лиса": "fox",
+                "Енот": "raccoon",
+                "Кошка": "cat",
+                "Собака": "dog",
+                "Птица": "bird",
+                "Кенгуру": "kangaroo",
+                "Коала": "koala",
+                "Панда": "panda",
+            },
+        ),
+    ):
+        try:
+            await inter.response.defer(ephemeral=False)
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    f"https://some-random-api.com/animal/{animal}"
+                ) as resp:
+                    data = await resp.json()
+
+            word = data["fact"]
+            fact = await translator(word, "ru")
+            embed = disnake.Embed(
+                description=f"**Факт:** {fact}", color=self.color.MAIN
+            )
+            embed.set_image(url=data["image"])
+            await inter.edit_original_message(embed=embed)
+        except Exception as e:
+            raise CustomError("Возникла проблема при отправке запроса на сервер!")
 
 
 def setup(bot):

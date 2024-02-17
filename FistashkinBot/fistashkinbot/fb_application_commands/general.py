@@ -7,7 +7,8 @@ import aiohttp
 
 from disnake.ext import commands
 from bs4 import BeautifulSoup
-from utils import constant, enums, main, links, database, paginator, checks
+from utils import constant, enums, main, links, database, paginator
+from utils import CustomError
 from helpers.settings_helper import *
 from humanize import naturaldelta
 
@@ -21,7 +22,6 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         self.color = enums.Color()
         self.db = database.DataBase()
         self.economy = main.EconomySystem(self.bot)
-        self.checks = checks.Checks(self.bot)
         self.enum = enums.Enum()
 
     async def autocomplete_faq(
@@ -688,6 +688,29 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         view.message = message
 
     @commands.slash_command(
+        name=disnake.Localized("monitoring", key="MONITORING_COMMAND_NAME"),
+        description=disnake.Localized(
+            "Displays the monitors where the bot is present.",
+            key="MONITORING_COMMAND_DESCRIPTION",
+        ),
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def monitoring(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.defer(ephemeral=True)
+        text = [
+            f"**А вот мини-инструкция, как апнуть {self.bot.user.name}:**\n"
+            f"1. Заходите поочередно на каждый из мониторингов, далее, авторизуетесь через свой аккаунт.\n"
+            f"2. После нажимаете на __**оценить**__, проходите капчу, и всё. Желательно делать так каждые 4 часа."
+        ]
+        embed = disnake.Embed(description="".join(text), color=self.color.MAIN)
+        embed.set_author(
+            name=f"{self.bot.user.name} на мониторингах!",
+            icon_url=self.bot.user.display_avatar.url,
+        )
+        embed.set_footer(text="Ну и отзыв по желанию 🥰")
+        await inter.edit_original_message(embed=embed, view=links.BotMonitoring())
+
+    @commands.slash_command(
         name=disnake.Localized("github", key="GITHUB_COMMAND_NAME"),
         description=disnake.Localized(
             "Github repository information.", key="GITHUB_COMMAND_DESCRIPTION"
@@ -767,15 +790,10 @@ class General(commands.Cog, name="🛠️ Утилиты"):
 
                     await inter.edit_original_message(embed=embed)
                 elif resp.status == 404:
-                    return await self.checks.check_unknown(
-                        inter, text=f"Репозиторий не найден!"
-                    )
-                elif resp.status == 503:
-                    return await self.checks.check_unknown(inter, text=f"Гитхаб упал!")
+                    raise CustomError("❌ Репозиторий не найден!")
                 else:
-                    return await self.checks.check_unknown(
-                        inter,
-                        text=f"Неизвестная ошибка при получении информации репозитория!",
+                    raise CustomError(
+                        "❌ Неизвестная ошибка при получении информации репозитория!"
                     )
 
     @commands.slash_command(
@@ -960,7 +978,7 @@ class InputSetBioUser(disnake.ui.Modal):
             await inter.response.edit_message(embed=embed, view=None)
 
         except ValueError:
-            return await self.checks.check_value_error(inter)
+            raise CustomError("❌ Вы ввели некорректные данные, попробуйте ещё раз.")
 
 
 def setup(bot):

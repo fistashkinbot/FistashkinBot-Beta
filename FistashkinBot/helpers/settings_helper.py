@@ -1,7 +1,7 @@
 import disnake
 
 from disnake.ext import commands
-from utils import constant, enums, main, database, checks
+from utils import constant, enums, main, database
 
 
 class TempVoiceButtons(disnake.ui.View):
@@ -298,7 +298,7 @@ class InputVoiceSettingTriggerDelete(disnake.ui.Modal):
             await inter.send(embed=embed, ephemeral=True)
 
         except ValueError:
-            return await self.checks.check_value_error(inter)
+            raise CustomError("❌ Вы ввели некорректные данные, попробуйте ещё раз.")
 
 
 class InputAddRoleShopSettings(disnake.ui.Modal):
@@ -353,6 +353,21 @@ class InputAddRoleShopSettings(disnake.ui.Modal):
                     embed=disnake.Embed(
                         title=f"{self.otheremojis.WARNING} Ошибка!",
                         description="❌ Вы не можете добавить роль, которая выше вашей.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+
+            if (
+                (role.position == 0)
+                or (role.is_premium_subscriber())
+                or (role.is_integration())
+                or (role.is_bot_managed())
+            ):
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Данную роль нельзя выставить в магазин!",
                         color=self.color.RED,
                     ),
                     ephemeral=True,

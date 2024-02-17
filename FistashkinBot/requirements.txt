@@ -10,3 +10,4 @@ humanize
 psutil
 loguru
 git+https://github.com/earluv/Wavelink-Disnake
+googletrans==3.1.0a0

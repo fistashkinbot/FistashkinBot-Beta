@@ -3,7 +3,7 @@ import random
 import datetime
 
 from disnake.ext import commands
-from utils import database, main, enums, constant, paginator, discord_card, checks
+from utils import database, main, enums, constant, paginator, discord_card, CustomError
 
 
 class Economy(commands.Cog, name="🍪 Экономика"):
@@ -14,7 +14,6 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         self.db = database.DataBase()
         self.color = enums.Color()
         self.otheremojis = constant.OtherEmojis()
-        self.checks = checks.Checks(self.bot)
         self.profile = constant.ProfileEmojis()
         self.enum = enums.Enum()
 
@@ -51,9 +50,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             member = inter.author
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         else:
             await inter.response.defer(ephemeral=False)
@@ -91,9 +88,7 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             member = inter.author
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         else:
             await inter.response.defer(ephemeral=False)
@@ -137,28 +132,27 @@ class Economy(commands.Cog, name="🍪 Экономика"):
     ):
         data = await self.db.get_data(inter.author)
         if amount is None:
-            return await self.checks.check_amount_is_none(inter)
+            raise CustomError(
+                f"❌ Укажите сумму **{self.economy.CURRENCY_NAME}**, которую желаете начислить на счет участника!"
+            )
 
         elif member == inter.author:
-            return await self.checks.check_user_author(
-                inter, text=f"перевести **{self.economy.CURRENCY_NAME}**"
+            raise CustomError(
+                f"❌ Ты не можешь **перевести {self.economy.CURRENCY_NAME}** самому себе!"
             )
 
         elif amount > data["balance"]:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"У вас недостаточно **{self.economy.CURRENCY_NAME}** для перевода!",
+            raise CustomError(
+                f"❌ У вас недостаточно **{self.economy.CURRENCY_NAME}** для перевода!"
             )
 
         elif amount <= 0:
-            return await self.checks.check_unknown(
-                inter, text=f"Укажите сумму больше **0 {self.economy.CURRENCY_NAME}**!"
+            raise CustomError(
+                f"❌ Укажите сумму больше **0 {self.economy.CURRENCY_NAME}**!"
             )
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         else:
             await inter.response.defer(ephemeral=False)
@@ -494,19 +488,16 @@ class Economy(commands.Cog, name="🍪 Экономика"):
         data = await self.db.get_data(inter.author)
         slot_amount = self.enum.format_large_number(amount)
         if amount > data["balance"]:
-            return await self.checks.check_unknown(
-                inter, text=f"У вас недостаточно денег для игры!"
-            )
+            raise CustomError("❌ У вас недостаточно денег для игры!")
 
         elif amount < 10:
-            return await self.checks.check_unknown(
-                inter, text=f"Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
+            raise CustomError(
+                f"❌ Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
             )
 
         elif amount > 500:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!",
+            raise CustomError(
+                f"❌ Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!"
             )
 
         else:
@@ -648,19 +639,18 @@ class Economy(commands.Cog, name="🍪 Экономика"):
     ):
         data = await self.db.get_data(inter.author)
         if amount > data["balance"]:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"У вас недостаточно {self.economy.CURRENCY_NAME} для игры в монетку! (Не хватает ещё {amount - data['balance']} {self.economy.CURRENCY_NAME})",
+            raise CustomError(
+                f"❌ У вас недостаточно {self.economy.CURRENCY_NAME} для игры в монетку! (Не хватает ещё {amount - data['balance']} {self.economy.CURRENCY_NAME})"
             )
+
         elif amount < 10:
-            return await self.checks.check_unknown(
-                inter, text=f"Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
+            raise CustomError(
+                f"❌ Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
             )
 
         elif amount > 500:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!",
+            raise CustomError(
+                f"❌ Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!"
             )
 
         else:
@@ -701,19 +691,18 @@ class Economy(commands.Cog, name="🍪 Экономика"):
     ):
         data = await self.db.get_data(inter.author)
         if amount > data["balance"]:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"У вас недостаточно {self.economy.CURRENCY_NAME} для битвы бойцовского клуба! (Не хватает ещё {amount - data['balance']} {self.economy.CURRENCY_NAME})",
+            raise CustomError(
+                f"❌ У вас недостаточно {self.economy.CURRENCY_NAME} для битвы в бойцовском клубе! (Не хватает ещё {amount - data['balance']} {self.economy.CURRENCY_NAME})"
             )
+
         elif amount < 10:
-            return await self.checks.check_unknown(
-                inter, text=f"Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
+            raise CustomError(
+                f"❌ Укажите сумму больше 10 {self.economy.CURRENCY_NAME}!"
             )
 
         elif amount > 500:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!",
+            raise CustomError(
+                f"❌ Укажите сумму меньше чем 500 {self.economy.CURRENCY_NAME}!"
             )
 
         else:
@@ -746,9 +735,8 @@ class Economy(commands.Cog, name="🍪 Экономика"):
     async def open_case(self, inter: disnake.ApplicationCommandInteraction):
         data = await self.db.get_data(inter.author)
         if 500 > data["balance"]:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"У вас недостаточно **{self.economy.CURRENCY_NAME}** для открытия кейса!",
+            raise CustomError(
+                f"❌ У вас недостаточно **{self.economy.CURRENCY_NAME}** для открытия кейса!"
             )
         else:
             await inter.response.defer(ephemeral=True)
@@ -776,7 +764,6 @@ class CoinButtons(disnake.ui.View):
         self.economy = main.EconomySystem(self.bot)
         self.db = database.DataBase()
         self.color = enums.Color()
-        self.checks = checks.Checks(self.bot)
         super().__init__(timeout=120.0)
 
     async def on_timeout(self):

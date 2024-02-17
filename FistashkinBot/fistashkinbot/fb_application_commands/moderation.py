@@ -3,7 +3,8 @@ import random
 import datetime
 
 from disnake.ext import commands
-from utils import main, enums, constant, checks, database
+from utils import main, enums, constant, database
+from utils import CustomError
 from helpers.mod_helper import ModerationHelper
 
 
@@ -13,7 +14,6 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         self.main = main.MainSettings()
         self.color = enums.Color()
         self.otheremojis = constant.OtherEmojis()
-        self.checks = checks.Checks(self.bot)
         self.db = database.DataBase()
         self.enum = enums.Enum()
 
@@ -56,32 +56,36 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         timemute = int(time[:-1])
 
         if member == self.bot.user:
-            return await self.checks.check_user_bot(
-                inter, text="выдавать блокировку чата"
+            raise CustomError(
+                f"❌ Ты не можешь **выдавать блокировку чата** {self.bot.user.mention}!"
             )
 
         elif member == inter.author:
-            return await self.checks.check_user_author(
-                inter, text="выдавать блокировку чата"
+            raise CustomError(
+                "❌ Ты не можешь **выдавать блокировку чата** самому себе!"
             )
 
         elif member.top_role >= inter.author.top_role:
-            return await self.checks.check_user_role(inter)
+            raise CustomError(
+                "❌ Ты не можешь использовать данную команду на участников с более высокой ролью!"
+            )
 
         elif member.top_role >= inter.guild.me.top_role:
-            return await self.checks.check_bot_role(inter)
+            raise CustomError(
+                "❌ Роль этого бота недостаточно высока, чтобы использовать данную команду!"
+            )
 
         elif member.current_timeout:
-            return await self.checks.check_member_timeout(inter, member)
+            raise CustomError(f"❌ Участник {member.mention} уже находится в тайм-ауте!")
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         if d == "s" or d == "с":
             if timemute > 2419000:
-                return await self.checks.check_timeout_time(inter)
+                raise CustomError(
+                    "❌ Ты не можешь замутить участника больше чем на **28 дней**!"
+                )
 
             return await ModerationHelper.check_time_muted(
                 self, inter, member, time, reason, send_to_member=True
@@ -89,7 +93,9 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
 
         elif d == "m" or d == "м" or d == "х":
             if timemute > 40320:
-                return await self.checks.check_timeout_time(inter)
+                raise CustomError(
+                    "❌ Ты не можешь замутить участника больше чем на **28 дней**!"
+                )
 
             return await ModerationHelper.check_time_muted(
                 self, inter, member, time, reason, send_to_member=True
@@ -97,7 +103,9 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
 
         elif d == "h" or d == "ч" or d == "г":
             if timemute > 672:
-                return await self.checks.check_timeout_time(inter)
+                raise CustomError(
+                    "❌ Ты не можешь замутить участника больше чем на **28 дней**!"
+                )
 
             return await ModerationHelper.check_time_muted(
                 self, inter, member, time, reason, send_to_member=True
@@ -105,7 +113,9 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
 
         elif d == "d" or d == "д":
             if timemute > 28:
-                return await self.checks.check_timeout_time(inter)
+                raise CustomError(
+                    "❌ Ты не можешь замутить участника больше чем на **28 дней**!"
+                )
 
             return await ModerationHelper.check_time_muted(
                 self, inter, member, time, reason, send_to_member=True
@@ -140,18 +150,20 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
     ):
         if member.current_timeout == None:
-            return await self.checks.check_member_timeout(inter, member)
+            raise CustomError("❌ Участник не находится в тайм-ауте!")
 
         elif member.top_role >= inter.author.top_role:
-            return await self.checks.check_user_role(inter)
+            raise CustomError(
+                "❌ Ты не можешь использовать данную команду на участников с более высокой ролью!"
+            )
 
         elif member.top_role >= inter.guild.me.top_role:
-            return await self.checks.check_bot_role(inter)
+            raise CustomError(
+                "❌ Роль этого бота недостаточно высока, чтобы использовать данную команду!"
+            )
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         return await ModerationHelper.send_embed_punishment(
             self,
@@ -193,21 +205,23 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
     ):
         if member == self.bot.user:
-            return await self.checks.check_user_bot(inter, text="кикнуть")
+            raise CustomError(f"❌ Ты не можешь **кикнуть** {self.bot.user.mention}!")
 
         elif member == inter.author:
-            return await self.checks.check_user_author(inter, text="кикнуть")
+            raise CustomError("❌ Ты не можешь **кикнуть** самому себе!")
 
         elif member.top_role >= inter.author.top_role:
-            return await self.checks.check_user_role(inter)
+            raise CustomError(
+                "❌ Ты не можешь использовать данную команду на участников с более высокой ролью!"
+            )
 
         elif member.top_role >= inter.guild.me.top_role:
-            return await self.checks.check_bot_role(inter)
+            raise CustomError(
+                "❌ Роль этого бота недостаточно высока, чтобы использовать данную команду!"
+            )
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         return await ModerationHelper.send_embed_punishment(
             self,
@@ -249,23 +263,25 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
     ):
         if member == self.bot.user:
-            return await self.checks.check_user_bot(inter, text="выдавать блокировку")
+            raise CustomError(
+                f"❌ Ты не можешь **выдавать блокировку** {self.bot.user.mention}!"
+            )
 
         elif member == inter.author:
-            return await self.checks.check_user_author(
-                inter, text="выдавать блокировку"
-            )
+            raise CustomError("❌ Ты не можешь **выдавать блокировку** самому себе!")
 
         elif member.top_role >= inter.author.top_role:
-            return await self.checks.check_user_role(inter)
+            raise CustomError(
+                "❌ Ты не можешь использовать данную команду на участников с более высокой ролью!"
+            )
 
         elif member.top_role >= inter.guild.me.top_role:
-            return await self.checks.check_bot_role(inter)
+            raise CustomError(
+                "❌ Роль этого бота недостаточно высока, чтобы использовать данную команду!"
+            )
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         return await ModerationHelper.send_embed_punishment(
             self,
@@ -276,6 +292,16 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             dm_punish=f"Вы были забанены на сервере `{inter.guild.name}`!",
             send_to_member=True,
         )
+
+    async def autocomplete_unban(
+        self, inter: disnake.ApplicationCommandInteraction, string: str
+    ):
+        return [
+            disnake.OptionChoice(
+                name=f"{ban.user.name} ({ban.user.id})", value=str(ban.user.id)
+            )
+            async for ban in inter.guild.bans(limit=200)
+        ]
 
     @commands.slash_command(
         name=disnake.Localized("unban", key="UNBAN_COMMAND_NAME"),
@@ -297,6 +323,7 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             description=disnake.Localized(
                 "Select a user.", key="TARGET_USER_DESCRIPTION"
             ),
+            autocomplete=autocomplete_unban,
         ),
         reason: str = commands.Param(
             lambda reason: "не указано",
@@ -307,19 +334,15 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
     ):
         if user == self.bot.user:
-            return await self.checks.check_user_bot(
-                inter, text="выдавать разблокировку"
+            raise CustomError(
+                f"❌ Ты не можешь **выдавать разблокировку** {self.bot.user.mention}!"
             )
 
         elif user == inter.author:
-            return await self.checks.check_user_author(
-                inter, text="выдавать разблокировку"
-            )
+            raise CustomError("❌ Ты не можешь **выдавать разблокировку** самому себе!")
 
         elif user.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         try:
             await inter.response.defer(ephemeral=False)
@@ -341,9 +364,8 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             )
             await inter.edit_original_message(embed=embed)
         except:
-            return await self.checks.check_unknown(
-                inter,
-                text=f"Участник **{user.mention}** отсутствует в списке банов или произошла ошибка!",
+            raise CustomError(
+                f"❌ Участник **{user.mention}** отсутствует в списке банов или произошла ошибка!"
             )
 
     @commands.slash_command(
@@ -463,25 +485,25 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
         ),
     ):
         if member == self.bot.user:
-            return await self.checks.check_user_bot(
-                inter, text="выдавать предупреждения"
+            raise CustomError(
+                f"❌ Ты не можешь **выдавать предупреждения** {self.bot.user.mention}!"
             )
 
         elif member == inter.author:
-            return await self.checks.check_user_author(
-                inter, text="выдавать предупреждения"
-            )
+            raise CustomError("❌ Ты не можешь **выдавать предупреждения** самому себе!")
 
         elif member.top_role >= inter.author.top_role:
-            return await self.checks.check_user_role(inter)
+            raise CustomError(
+                "❌ Ты не можешь использовать данную команду на участников с более высокой ролью!"
+            )
 
         elif member.top_role >= inter.guild.me.top_role:
-            return await self.checks.check_bot_role(inter)
+            raise CustomError(
+                "❌ Роль этого бота недостаточно высока, чтобы использовать данную команду!"
+            )
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         warns = await self.db.get_warns(member)
         warnnum = 0
@@ -534,9 +556,7 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             member = inter.author
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         await inter.response.defer(ephemeral=False)
         warns = await self.db.get_warns(member)
@@ -593,9 +613,7 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             member = inter.author
 
         elif member.bot:
-            return await self.checks.check_unknown(
-                inter, text=f"Ты не можешь взаимодействовать с ботами!"
-            )
+            raise CustomError("❌ Ты не можешь взаимодействовать с ботами!")
 
         await self.db.remove_warns(member=member)
         embed = disnake.Embed(

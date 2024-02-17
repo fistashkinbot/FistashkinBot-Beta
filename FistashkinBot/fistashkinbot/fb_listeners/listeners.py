@@ -4,7 +4,7 @@ import random
 import platform
 
 from disnake.ext import commands, tasks
-from utils import enums, main, automod, links, checks, fistashkin_status
+from utils import enums, main, automod, links, fistashkin_status
 from loguru import logger
 
 
@@ -15,7 +15,6 @@ class Listeners(commands.Cog):
         self.main = main.MainSettings()
         self.activity = fistashkin_status.BotActivity()
         self.automod = automod.Automod()
-        self.checks = checks.Checks(self.bot)
 
     @tasks.loop(minutes=15)
     async def change_activity(self):

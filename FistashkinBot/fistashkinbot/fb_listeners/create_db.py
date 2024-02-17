@@ -18,27 +18,21 @@ class DB_Event(commands.Cog):
     @commands.Cog.listener(disnake.Event.ready)
     async def on_ready(self):
         await self.db.create_table()
-        logger.info(f"[DATABASE] Таблицы успешно созданы!")
 
         for guild in self.bot.guilds:
             for member in guild.members:
                 await self.db.insert_new_member(member)
-        logger.info(f"{len(guild.members)} участников было добавлено в базу данных!")
+
+        logger.info(f"[DATABASE] Таблицы успешно созданы!")
 
     @commands.Cog.listener(disnake.Event.member_join)
     async def on_member_join(self, member):
         await self.db.insert_new_member(member)
-        logger.info(
-            f"Участник {member} (ID: {member.id}, Guild: {member.guild.name}, GID: {member.guild.id}) был добавлен в базу данных!"
-        )
 
     @commands.Cog.listener(disnake.Event.guild_join)
     async def on_guild_join(self, guild):
         for member in guild.members:
             await self.db.insert_new_member(member)
-        logger.info(
-            f"Сервер {guild.name} ({guild.id}) был добавлен в базу данных! Добавлено новых участников: {len(guild.members)}"
-        )
 
     @commands.Cog.listener(disnake.Event.slash_command_completion)
     @commands.Cog.listener(disnake.Event.user_command_completion)

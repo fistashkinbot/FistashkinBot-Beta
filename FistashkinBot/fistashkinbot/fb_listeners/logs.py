@@ -192,9 +192,7 @@ class Logs(commands.Cog):
                 datetime.datetime.now().timestamp()
             ),
         )
-        embed.set_footer(
-            text=f"ID {'бота' if after.bot else 'участника'}: {after.id}"
-        )
+        embed.set_footer(text=f"ID {'бота' if after.bot else 'участника'}: {after.id}")
         embed.set_thumbnail(url=after.display_avatar.url)
 
         if before.display_name != after.display_name:
@@ -208,24 +206,33 @@ class Logs(commands.Cog):
             await channel.send(embed=embed)
 
         if before.roles != after.roles:
-            added_roles = [f"<@&{role.id}>" for role in after.roles if role not in before.roles]
-            removed_roles = [f"<@&{role.id}>" for role in before.roles if role not in after.roles]
+            added_roles = [
+                f"<@&{role.id}>" for role in after.roles if role not in before.roles
+            ]
+            removed_roles = [
+                f"<@&{role.id}>" for role in before.roles if role not in after.roles
+            ]
 
-            embed.description=f"Роли {'бота' if after.bot else 'участника'} **{after}** ({after.mention}) были изменены"
-            
+            embed.description = f"Роли {'бота' if after.bot else 'участника'} **{after}** ({after.mention}) были изменены"
+
             if added_roles:
                 for role in added_roles:
                     roles = role
                 embed.add_field(
-                    name=f"{'Добавленные роли:' if int(len(roles)) > 1 else 'Добавленная роль:'}", value=roles, inline=True
+                    name=f"{'Добавленные роли:' if int(len(roles)) > 1 else 'Добавленная роль:'}",
+                    value=roles,
+                    inline=True,
                 )
             if removed_roles:
                 for role in removed_roles:
                     roles = role
                 embed.add_field(
-                    name=f"{'Убранные роли:' if int(len(roles)) > 1 else 'Убранная роль:'}", value=roles, inline=True
+                    name=f"{'Убранные роли:' if int(len(roles)) > 1 else 'Убранная роль:'}",
+                    value=roles,
+                    inline=True,
                 )
             await channel.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Logs(bot))

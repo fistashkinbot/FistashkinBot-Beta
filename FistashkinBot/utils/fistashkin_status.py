@@ -118,6 +118,11 @@ class BotActivity:
             name=random.choice(Activity.LISTENING_NAMES),
             type=disnake.ActivityType.listening,
         ),
+        disnake.Activity(
+            name="🍪 FistashkinBot любит печеньки!",
+            state="🍪 FistashkinBot любит печеньки!",
+            type=disnake.ActivityType.custom,
+        ),
     ]
 
     STATUS = [disnake.Status.idle, disnake.Status.online, disnake.Status.dnd]

@@ -68,6 +68,23 @@ class MusicEmojis:
     LOOP_NONE = "<:loop_none:1079792254723567736>"
     LOOP_ONE = "<:loop_one:1079792256749408416>"
 
+    PLAYER_SETTINGS = {"playerEditSeconds": 4, "playerProgressCount": 10, "waiting": 0}
+
+    EMOJIS = {
+        "playEmoji": "▶️",
+        "stopEmoji": "⏹️",
+        "pauseEmoji": "⏸️",
+        "skipEmoji": "⏭️",
+        "shuffleEmoji": "🔀",
+        "loopEmoji": "🔁",
+        "onLoopMode": "🔂",
+        "backEmoji": "⏮️",
+        "volumepEmoji": "🔊",
+        "volumemEmoji": "🔉",
+        "playlistEmoji": "📋",
+        "bassboostEmoji": "🅱️",
+    }
+
 
 class OtherEmojis:
     ERROR = "<:error:1129825410109145239>"

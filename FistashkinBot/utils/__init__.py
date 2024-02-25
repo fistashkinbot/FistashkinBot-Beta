@@ -9,3 +9,4 @@ from .checks import *
 from .discord_card import *
 from .paginator import *
 from .exception import *
+from .markov import *

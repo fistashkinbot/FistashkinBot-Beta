@@ -399,10 +399,6 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             await inter.edit_original_message(embed=embed)
             return
 
-        if len(embeds) > 1:
-            view = paginator.Paginator(inter, embeds=role_pages)
-        else:
-            view = None
         # Добавляем кнопки к представлению
         for role_button in role_buttons:
             view.add_item(role_button)

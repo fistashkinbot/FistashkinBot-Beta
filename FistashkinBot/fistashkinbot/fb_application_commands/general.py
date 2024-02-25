@@ -132,6 +132,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             f"**Присоединился:** {joinedf} ({joinedr})",
             f"**Дата регистрации:** {registerf} ({registerr})",
         ]
+        view = None
         if not member.bot:
             if member.activities:
                 for activity in member.activities:
@@ -151,6 +152,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
                             description.append(
                                 f"**Cлушает Spotify:** {self.profile.SPOTIFY} **[{activity.title} | {', '.join(activity.artists)}]({activity.track_url})**"
                             )
+                            view = links.Spotify_Link(url=activity.track_url)
                         else:
                             description.append(f"**Слушает:** {activity.name}")
 
@@ -164,9 +166,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
 
         embed = disnake.Embed(
             description=bio,
-            color=self.color.DARK_GRAY
-            if member.top_role == member.guild.default_role or member.bot
-            else member.top_role.color,
+            color=user.accent_color,
             timestamp=inter.created_at,
         )
 
@@ -197,7 +197,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             name=f"Информация о {'боте' if member.bot else 'участнике'} {member.display_name}",
             icon_url=member.display_avatar.url,
         )
-        await inter.edit_original_message(embed=embed)
+        await inter.edit_original_message(embed=embed, view=view)
 
     @commands.slash_command(
         name=disnake.Localized("serverinfo", key="SERVER_INFO_COMMAND_NAME"),
@@ -221,6 +221,7 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             "1": "#2 (Аква)",
             "2": "#3 (Дикси)",
             "3": "#4 (Гроув)",
+            "4": "#5 (Хакари)",
         }
 
         total_members = self.enum.format_large_number(len(inter.guild.members))
@@ -709,6 +710,42 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         )
         embed.set_footer(text="Ну и отзыв по желанию 🥰")
         await inter.edit_original_message(embed=embed, view=links.BotMonitoring())
+
+    @commands.slash_command(
+        name="markov-info", description="Информация о цепях Маркова."
+    )
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def info_markov_data(self, inter: disnake.ApplicationCommandInteraction):
+        if len(await self.db.get_items(inter.guild.id)) > 0:
+            await inter.response.defer(ephemeral=False)
+            description = f"Сохраненных сообщений сервера: **{len(await self.db.get_items(inter.guild.id))}**"
+        else:
+            await inter.response.defer(ephemeral=True)
+            description = f"Нету сохранненных сообщений!"
+        embed = disnake.Embed(description=description, color=self.color.MAIN)
+        embed.set_thumbnail(url=inter.guild.icon.url if inter.guild.icon else None)
+        embed.set_author(name=f"Цепи Маркова")
+        embed.set_footer(text=f"ID: {inter.guild.id}")
+        await inter.edit_original_message(embed=embed)
+
+    @commands.slash_command(
+        name="markov-wipe-data", description="Очистить сохраненные сообщения из каналов"
+    )
+    @commands.is_owner()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def wipe_markov_data(self, inter: disnake.ApplicationCommandInteraction):
+        if len(await self.db.get_items(inter.guild.id)) > 0:
+            await inter.response.defer(ephemeral=False)
+            description = f"Данные сообщений были успешно удалены!\nУдаленных сохраненных сообщений: **{len(await self.db.get_items(inter.guild.id))}**"
+        else:
+            await inter.response.defer(ephemeral=True)
+            description = f"Нету сохранненных сообщений для удаления!"
+        await self.db.delete_item(inter.guild.id)
+        embed = disnake.Embed(description=description, color=self.color.MAIN)
+        embed.set_thumbnail(url=inter.guild.icon.url if inter.guild.icon else None)
+        embed.set_author(name=f"Цепи Маркова")
+        embed.set_footer(text=f"ID: {inter.guild.id}")
+        await inter.edit_original_message(embed=embed)
 
     @commands.slash_command(
         name=disnake.Localized("github", key="GITHUB_COMMAND_NAME"),

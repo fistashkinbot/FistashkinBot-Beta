@@ -1,7 +1,7 @@
 import disnake
 
 from disnake.ext import commands
-from utils import database, constant, main, enums, checks
+from utils import database, constant, main, enums, links
 
 
 class ContextMenu(commands.Cog):
@@ -12,7 +12,6 @@ class ContextMenu(commands.Cog):
         self.economy = main.EconomySystem(self.bot)
         self.profile = constant.ProfileEmojis()
         self.color = enums.Color()
-        self.checks = checks.Checks(self.bot)
         self.enum = enums.Enum()
 
     @commands.user_command(
@@ -96,6 +95,7 @@ class ContextMenu(commands.Cog):
             f"**Присоединился:** {joinedf} ({joinedr})",
             f"**Дата регистрации:** {registerf} ({registerr})",
         ]
+        view = None
         if not member.bot:
             if member.activities:
                 for activity in member.activities:
@@ -115,6 +115,7 @@ class ContextMenu(commands.Cog):
                             description.append(
                                 f"**Cлушает Spotify:** {self.profile.SPOTIFY} **[{activity.title} | {', '.join(activity.artists)}]({activity.track_url})**"
                             )
+                            view = links.Spotify_Link(url=activity.track_url)
                         else:
                             description.append(f"**Слушает:** {activity.name}")
 
@@ -128,9 +129,7 @@ class ContextMenu(commands.Cog):
 
         embed = disnake.Embed(
             description=bio,
-            color=self.color.DARK_GRAY
-            if member.top_role == member.guild.default_role or member.bot
-            else member.top_role.color,
+            color=user.accent_color,
             timestamp=inter.created_at,
         )
 
@@ -161,7 +160,7 @@ class ContextMenu(commands.Cog):
             name=f"Информация о {'боте' if member.bot else 'участнике'} {member.display_name}",
             icon_url=member.display_avatar.url,
         )
-        await inter.edit_original_message(embed=embed)
+        await inter.edit_original_message(embed=embed, view=view)
 
 
 def setup(bot):

@@ -11,6 +11,7 @@ class LevelCard:
         self.xp: int = 0
         self.required_xp: int = 1
         self.total_xp: int = 1
+        self.rank_pos: int = 1
         self.name: str = None
         self.avatar: str = None
         self.color: str = "#e39e7e"
@@ -53,7 +54,7 @@ class LevelCard:
         background.rectangle((200, 100), width=350, height=10, fill=self.color)
         background.text(
             (200, 130),
-            f"Level : {self.level}" + f"      XP : {self.xp} / {self.required_xp}",
+            f"Rank : # {self.rank_pos}" + f"      Level : {self.level}" + f"      XP : {self.xp} / {self.required_xp}      ",
             font=poppins_small,
             color="white",
         )

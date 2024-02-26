@@ -54,11 +54,25 @@ class Economy(commands.Cog, name="🍪 Экономика"):
 
         else:
             await inter.response.defer(ephemeral=False)
-            embed = disnake.Embed(
-                description=f"[`💰`] **Баланс {member.mention} составляет:** `{balance}` {self.economy.CURRENCY_NAME}\n"
-                f"[`🧸`] **Уровень:** `{level}` [**XP:** `{xp}/{xp_to_lvl}` | **Всего:** `{total_xp}`]",
-                color=self.color.MAIN,
+            rank_data = await self.db.get_data(
+                inter.guild.id, all_data=True, filters="ORDER BY level DESC, xp DESC"
             )
+            user_rank_position = next(
+                (index + 1 for index, row in enumerate(rank_data) if row["member_id"] == inter.author.id),
+                None,
+            )
+            balance_data = await self.db.get_data(
+                inter.guild.id, all_data=True, filters="ORDER BY balance DESC"
+            )
+            user_balance_position = next(
+                (index + 1 for index, row in enumerate(balance_data) if row["member_id"] == inter.author.id),
+                None,
+            )
+            embed = disnake.Embed(
+                color=self.color.MAIN
+            )
+            embed.add_field(name="💰 Баланс:", value=f"`{balance}` {self.economy.CURRENCY_NAME}", inline=True)
+            embed.add_field(name=f"🧸 Рейтинг {self.economy.CURRENCY_NAME}:", value=f"# `{user_balance_position}/{len(balance_data)}`", inline=True)
             embed.set_author(
                 name=f"💳 Отчётность о балансе", icon_url=member.display_avatar.url
             )
@@ -92,15 +106,23 @@ class Economy(commands.Cog, name="🍪 Экономика"):
 
         else:
             await inter.response.defer(ephemeral=False)
+            rank_data = await self.db.get_data(
+                inter.guild.id, all_data=True, filters="ORDER BY level DESC, xp DESC"
+            )
+            user_rank_position = next(
+                (index + 1 for index, row in enumerate(rank_data) if row["member_id"] == inter.author.id),
+                None,
+            )
 
             levelcard = discord_card.LevelCard()
             data = await self.db.get_data(member)
             levelcard.avatar = member.display_avatar.url
-            levelcard.path = "https://cdn.discordapp.com/attachments/1008029744706621453/1201299441865470044/11_1.png?ex=65c9504a&is=65b6db4a&hm=f7fc409c6c30653d4ed6fc582d3703d3cec0497a87e2ab4b8dd299910a2e62c2&"  # "https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"
+            levelcard.path = "https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"  # "https://raw.githubusercontent.com/mario1842/mariocard/main/bg.png"
             levelcard.name = member
             levelcard.xp = data["xp"]
             levelcard.required_xp = 5 * (data["level"] ** 2) + 50 * data["level"] + 100
             levelcard.level = data["level"]
+            levelcard.rank_pos = user_rank_position
             levelcard.is_rounded = True
 
             await inter.edit_original_message(file=await levelcard.create())
@@ -399,6 +421,10 @@ class Economy(commands.Cog, name="🍪 Экономика"):
             await inter.edit_original_message(embed=embed)
             return
 
+        if len(embeds) > 1:
+            view = paginator.Paginator(inter, embeds=role_pages)
+        else:
+            view = None
         # Добавляем кнопки к представлению
         for role_button in role_buttons:
             view.add_item(role_button)

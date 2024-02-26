@@ -101,6 +101,20 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         registerr = disnake.utils.format_dt(member.created_at, style="R")
         joinedf = disnake.utils.format_dt(member.joined_at, style="f")
         joinedr = disnake.utils.format_dt(member.joined_at, style="R")
+        rank_data = await self.db.get_data(
+            inter.guild.id, all_data=True, filters="ORDER BY level DESC, xp DESC"
+        )
+        user_rank_position = next(
+            (index + 1 for index, row in enumerate(rank_data) if row["member_id"] == inter.author.id),
+            None,
+        )
+        balance_data = await self.db.get_data(
+                inter.guild.id, all_data=True, filters="ORDER BY balance DESC"
+            )
+        user_balance_position = next(
+            (index + 1 for index, row in enumerate(balance_data) if row["member_id"] == inter.author.id),
+            None,
+        )
 
         level = self.enum.format_large_number(data["level"])
         xp = self.enum.format_large_number(data["xp"])
@@ -109,6 +123,10 @@ class General(commands.Cog, name="🛠️ Утилиты"):
             5 * (data["level"] ** 2) + 50 * data["level"] + 100
         )
         balance = self.enum.format_large_number(data["balance"])
+        ranking_position = self.enum.format_large_number(user_rank_position)
+        ranking_members = self.enum.format_large_number(len(rank_data))
+        balance_position = self.enum.format_large_number(user_balance_position)
+        balance_members = self.enum.format_large_number(len(balance_data))
         bio = await self.db.get_bio(member)
 
         user = await self.bot.fetch_user(member.id)
@@ -177,13 +195,23 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         )
         if not member.bot:
             embed.add_field(
+                name="Рейтинг",
+                value=f"# {ranking_position}/{ranking_members}",
+                inline=True,
+            )
+            embed.add_field(
                 name="Уровень",
-                value=f"{level} | Опыт: {xp}/{xp_to_lvl}\n(всего: {total_xp})",
+                value=f"{level}",
+                inline=True,
+            )
+            embed.add_field(
+                name="Опыт",
+                value=f"{xp}/{xp_to_lvl} (всего {total_xp})",
                 inline=True,
             )
             embed.add_field(
                 name="Экономика",
-                value=f"{balance} {self.economy.CURRENCY_NAME}",
+                value=f"{balance} {self.economy.CURRENCY_NAME} | # {balance_position}/{balance_members}",
                 inline=True,
             )
 

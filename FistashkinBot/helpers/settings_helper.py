@@ -543,6 +543,46 @@ class InputAddLogsSettings(disnake.ui.Modal):
                     ephemeral=True,
                 )
 
+            if isinstance(channel, disnake.CategoryChannel):
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Нельзя использовать категорию для логгирования.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+            
+            if isinstance(channel, disnake.VoiceChannel):
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Нельзя использовать голосовой канал для логгирования.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+
+            if isinstance(channel, disnake.Thread):
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Нельзя использовать ветки для логгирования.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+
+            if channel.type == disnake.ChannelType.forum:
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Нельзя использовать форум для логгирования.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+
             if channel.is_system():
                 return await inter.send(
                     embed=disnake.Embed(

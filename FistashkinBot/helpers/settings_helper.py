@@ -543,6 +543,16 @@ class InputAddLogsSettings(disnake.ui.Modal):
                     ephemeral=True,
                 )
 
+            if channel.is_system():
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description=f"❌ Нельзя использовать системный канал для логгирования.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
+
             existing_trigger = await self.db.get_log_channel(inter.guild.id)
             if existing_trigger:
                 return await inter.send(

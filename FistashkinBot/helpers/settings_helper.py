@@ -532,7 +532,16 @@ class InputAddLogsSettings(disnake.ui.Modal):
         try:
             id_channel_logs = int(inter.text_values["add_logs_id"])
 
-            channel = disnake.utils.get(inter.guild.channels, id=id_channel_logs)
+            channel = await inter.guild.fetch_channel(id_channel_logs)
+            if not channel:
+                return await inter.send(
+                    embed=disnake.Embed(
+                        title=f"{self.otheremojis.WARNING} Ошибка!",
+                        description="❌ Указанный канал не существует или бот не имеет доступа к нему.",
+                        color=self.color.RED,
+                    ),
+                    ephemeral=True,
+                )
 
             existing_trigger = await self.db.get_log_channel(inter.guild.id)
             if existing_trigger:
@@ -551,89 +560,15 @@ class InputAddLogsSettings(disnake.ui.Modal):
             )
             await inter.send(embed=embed, ephemeral=True)
 
-        except ValueError:
+        except disnake.errors.Forbidden:
             return await inter.send(
                 embed=disnake.Embed(
                     title=f"{self.otheremojis.WARNING} Ошибка!",
-                    description="❌ Вы ввели некорректные данные, попробуйте ещё раз.",
+                    description="❌ Бот не имеет доступа к указанному каналу.",
                     color=self.color.RED,
                 ),
                 ephemeral=True,
             )
-
-
-class InputDeleteLogsSettings(disnake.ui.Modal):
-    message: disnake.Message
-
-    def __init__(self):
-        self.otheremojis = constant.OtherEmojis()
-        self.db = database.DataBase()
-        self.color = enums.Color()
-
-        components = [
-            disnake.ui.TextInput(
-                label="ID роли",
-                placeholder="Укажите ID канала.",
-                custom_id="delete_role_id",
-                style=disnake.TextInputStyle.short,
-                max_length=50,
-            )
-        ]
-        super().__init__(
-            title="Настройка магазина",
-            components=components,
-            custom_id="delete_role_shop",
-        )
-
-    async def callback(self, inter: disnake.ModalInteraction):
-        try:
-            role_id = int(inter.text_values["delete_role_id"])
-            role = disnake.utils.get(inter.guild.roles, id=role_id)
-
-            # Проверка на наличие роли на сервере
-            if role is None:
-                return await inter.send(
-                    embed=disnake.Embed(
-                        title=f"{self.otheremojis.WARNING} Ошибка!",
-                        description="❌ Указанной роли не существует на сервере.",
-                        color=self.color.RED,
-                    ),
-                    ephemeral=True,
-                )
-
-            if role.position >= inter.author.top_role.position:
-                return await inter.send(
-                    embed=disnake.Embed(
-                        title=f"{self.otheremojis.WARNING} Ошибка!",
-                        description="❌ Вы не можете удалить роль, которая выше вашей.",
-                        color=self.color.RED,
-                    ),
-                    ephemeral=True,
-                )
-
-            # Проверка на наличие роли в магазине
-            shop_data = await self.db.get_shop_data(role)
-            if shop_data is None:
-                return await inter.send(
-                    embed=disnake.Embed(
-                        title=f"{self.otheremojis.WARNING} Ошибка!",
-                        description=f"❌ Роль {role.mention} отсутствует в магазине.",
-                        color=self.color.RED,
-                    ),
-                    ephemeral=True,
-                )
-
-            await self.db.delete_role_from_shop(role)
-
-            embed = disnake.Embed(
-                description=f"✅ Вы успешно удалили роль {role.mention} из магазина!",
-                color=self.color.GREEN,
-            )
-            embed.set_author(
-                name="Удаление роли из магазина",
-                icon_url=inter.author.display_avatar.url,
-            )
-            await inter.send(embed=embed, ephemeral=True)
 
         except ValueError:
             return await inter.send(

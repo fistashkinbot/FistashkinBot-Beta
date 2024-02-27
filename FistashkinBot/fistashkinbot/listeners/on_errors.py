@@ -27,6 +27,8 @@ PERMISSIONS = {
     "view_channel": "Просматривать канал",
     "manage_roles": "Управлять ролями",
     "moderate_members": "Управлять участниками",
+    "manage_messages": "Управлять сообщениями",
+    "manage_channels": "Управлять каналами"
 }
 
 

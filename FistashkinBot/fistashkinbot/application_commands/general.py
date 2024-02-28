@@ -861,12 +861,8 @@ class General(commands.Cog, name="🛠️ Утилиты"):
                                 pass
 
                     await inter.edit_original_message(embed=embed)
-                elif resp.status == 404:
-                    raise CustomError("❌ Репозиторий не найден!")
                 else:
-                    raise CustomError(
-                        "❌ Неизвестная ошибка при получении информации репозитория!"
-                    )
+                    raise CustomError("❌ Репозиторий не найден! [404: Ошибка при получении информации репозитория]")
 
 
 class BioButtons(disnake.ui.View):

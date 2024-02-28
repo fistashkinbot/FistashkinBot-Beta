@@ -390,6 +390,11 @@ class Moderation(commands.Cog, name="👮🏻 Модерация"):
             ),
         ),
     ):
+        if 0 > seconds:
+            raise CustomError(
+                f"❌ Значение не может быть меньше нуля!"
+            )
+            
         if seconds == 0:
             await inter.response.defer(ephemeral=False)
             await inter.channel.edit(slowmode_delay=seconds)

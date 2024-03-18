@@ -103,25 +103,22 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         rank_data = await self.db.get_data(
             inter.guild.id, all_data=True, filters="ORDER BY level DESC, xp DESC"
         )
-        user_rank_position = next(
-            (
-                index + 1
-                for index, row in enumerate(rank_data)
-                if row["member_id"] == inter.author.id
-            ),
-            None,
-        )
+        user_rank_position = None
+        for index, row in enumerate(rank_data):
+            member = inter.guild.get_member(row["member_id"])
+            if member and not member.bot and row["member_id"] == inter.author.id:
+                user_rank_position = index + 1
+                break
+
         balance_data = await self.db.get_data(
             inter.guild.id, all_data=True, filters="ORDER BY balance DESC"
         )
-        user_balance_position = next(
-            (
-                index + 1
-                for index, row in enumerate(balance_data)
-                if row["member_id"] == inter.author.id
-            ),
-            None,
-        )
+        user_balance_position = None
+        for index, row in enumerate(balance_data):
+            member = inter.guild.get_member(row["member_id"])
+            if member and not member.bot and row["member_id"] == inter.author.id:
+                user_balance_position = index + 1
+                break
 
         level = self.enum.format_large_number(data["level"])
         xp = self.enum.format_large_number(data["xp"])
@@ -747,23 +744,6 @@ class General(commands.Cog, name="🛠️ Утилиты"):
         await inter.edit_original_message(embed=embed, view=links.BotMonitoring())
 
     @commands.slash_command(
-        name="markov-info", description="Информация о цепях Маркова."
-    )
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def info_markov_data(self, inter: disnake.ApplicationCommandInteraction):
-        if len(await self.db.get_items(inter.guild.id)) > 0:
-            await inter.response.defer(ephemeral=False)
-            description = f"Сохраненных сообщений сервера: **{len(await self.db.get_items(inter.guild.id))}**"
-        else:
-            await inter.response.defer(ephemeral=True)
-            description = f"Нету сохранненных сообщений!"
-        embed = disnake.Embed(description=description, color=self.color.MAIN)
-        embed.set_thumbnail(url=inter.guild.icon.url if inter.guild.icon else None)
-        embed.set_author(name=f"Цепи Маркова")
-        embed.set_footer(text=f"ID: {inter.guild.id}")
-        await inter.edit_original_message(embed=embed)
-
-    @commands.slash_command(
         name="markov-wipe-data", description="Очистить сохраненные сообщения из каналов"
     )
     @commands.is_owner()
@@ -861,8 +841,12 @@ class General(commands.Cog, name="🛠️ Утилиты"):
                                 pass
 
                     await inter.edit_original_message(embed=embed)
+                elif resp.status == 404:
+                    raise CustomError("❌ Репозиторий не найден!")
                 else:
-                    raise CustomError("❌ Репозиторий не найден! [404: Ошибка при получении информации репозитория]")
+                    raise CustomError(
+                        "❌ Неизвестная ошибка при получении информации репозитория!"
+                    )
 
 
 class BioButtons(disnake.ui.View):

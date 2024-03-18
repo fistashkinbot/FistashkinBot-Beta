@@ -64,20 +64,26 @@ class ContextMenu(commands.Cog):
         registerr = disnake.utils.format_dt(member.created_at, style="R")
         joinedf = disnake.utils.format_dt(member.joined_at, style="f")
         joinedr = disnake.utils.format_dt(member.joined_at, style="R")
+
         rank_data = await self.db.get_data(
             inter.guild.id, all_data=True, filters="ORDER BY level DESC, xp DESC"
         )
-        user_rank_position = next(
-            (index + 1 for index, row in enumerate(rank_data) if row["member_id"] == inter.author.id),
-            None,
-        )
+        user_rank_position = None
+        for index, row in enumerate(rank_data):
+            member = inter.guild.get_member(row["member_id"])
+            if member and not member.bot and row["member_id"] == inter.author.id:
+                user_rank_position = index + 1
+                break
+
         balance_data = await self.db.get_data(
-                inter.guild.id, all_data=True, filters="ORDER BY balance DESC"
-            )
-        user_balance_position = next(
-            (index + 1 for index, row in enumerate(balance_data) if row["member_id"] == inter.author.id),
-            None,
+            inter.guild.id, all_data=True, filters="ORDER BY balance DESC"
         )
+        user_balance_position = None
+        for index, row in enumerate(balance_data):
+            member = inter.guild.get_member(row["member_id"])
+            if member and not member.bot and row["member_id"] == inter.author.id:
+                user_balance_position = index + 1
+                break
 
         level = self.enum.format_large_number(data["level"])
         xp = self.enum.format_large_number(data["xp"])
